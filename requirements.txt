@@ -1,0 +1,5 @@
+numpy==1.24.3
+pandas==2.0.3
+rdkit==2024.3.5
+tensorflow==2.10.0
+matplotlib==3.7.5
