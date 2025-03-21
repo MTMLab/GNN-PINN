@@ -60,6 +60,8 @@ pip install -r requirements.txt
 ```
 
 ├── dataset.csv               # Input CSV file containing the dataset
+
 ├── README.md                 # This file
+
 └──  GNN_PINN.py              # Main script 
 
