@@ -51,7 +51,7 @@ csv_path = "dataset.csv"
 df_all = pd.read_csv(csv_path)
 df_all = df_all.sample(frac=1, random_state=0).reset_index(drop=True)
 
-# eq / non-eq 구분
+
 df_eq  = df_all[(df_all["maskHv"] + df_all["maskSv"] + df_all["maskHl"] + df_all["maskSl"]) == 4]
 df_non = df_all[(df_all["maskHv"] + df_all["maskSv"] + df_all["maskHl"] + df_all["maskSl"]) < 4]
 
