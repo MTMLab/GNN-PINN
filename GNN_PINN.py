@@ -16,8 +16,8 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 
-# CPU mode (optional)
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# CPU mode ("-1" = CPU mode, "0" = GPU mode)
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 ###############################################################################
@@ -297,8 +297,8 @@ def gen_non_dataset(df_sub):
         nodes = pad_array(nodes, max_graph_size)
         adj   = pad_matrix(adj,   max_graph_size)
 
-        T_val  = row["T"]    # (정규화된 T)
-        P_val  = row["P"]    # (정규화된 P)
+        T_val  = row["T"]   
+        P_val  = row["P"]    
         tr_val = row["tr"]
         pr_val = row["pr"]
         af_val = row.get("af",0.0)
@@ -315,7 +315,7 @@ def gen_non_dataset(df_sub):
         mHl = row["maskHl"]
         mSl = row["maskSl"]
 
-        # === 정규화 풀기(원래 P) ===
+        
         P_orig = (row["P"] * std_dict["P"]) + mean_dict["P"]
 
         y_true = np.array([Hv_, Sv_, Hl_, Sl_], dtype=np.float32)
@@ -332,7 +332,7 @@ def gen_non_dataset(df_sub):
             np.array([Tc_val],dtype=np.float32),
             np.array([Pc_val],dtype=np.float32),
         )
-        # label_in에 P_orig(1-D array 형태) 추가
+        
         label_in = (
             y_true,
             y_mask,
@@ -358,11 +358,11 @@ def make_non_dataset(df_sub, batch_size=16):
                 tf.TensorSpec((1,), tf.float32),
             ),
             (
-                tf.TensorSpec((4,), tf.float32),     # y_true
-                tf.TensorSpec((4,), tf.float32),     # y_mask
-                tf.TensorSpec((1,), tf.float32),     # T_val
-                tf.TensorSpec((1,), tf.float32),     # P_orig
-                tf.TensorSpec((),   tf.string),      # smiles_str
+                tf.TensorSpec((4,), tf.float32),     
+                tf.TensorSpec((4,), tf.float32),     
+                tf.TensorSpec((1,), tf.float32),    
+                tf.TensorSpec((1,), tf.float32),     
+                tf.TensorSpec((),   tf.string),      
             )
         )
     )
@@ -372,19 +372,15 @@ def make_non_dataset(df_sub, batch_size=16):
 # 4. eqPINN Dataset => use "P_pred" in place of real P
 ###############################################################################
 def gen_eqPINN_dataset(df_sub):
-    """
-    eq df 에서 'P_pred' 열은 PINN 입력용 (정규화된 satur P),
-    'P' 열은 본래의 실측 P(정규화 전 or 후?)인데, 현재 df_sub는 z-score가 되어있으므로 
-    원래 P = row["P"] * std_dict["P"] + mean_dict["P"] 로 복원
-    """
+
     for idx, row in df_sub.iterrows():
         smiles = str(row["SMILES"])
         nodes, adj = gen_smiles2graph(smiles)
         nodes = pad_array(nodes, max_graph_size)
         adj   = pad_matrix(adj,   max_graph_size)
 
-        T_val  = row["T"]         # z-score
-        P_pred = row["P_pred"]    # z-score 상태 (saturation model 예측값)
+        T_val  = row["T"]         
+        P_pred = row["P_pred"]    
         tr_val = row["tr"]
         pr_val = row["pr"]
         af_val = row.get("af",0.0)
@@ -405,25 +401,25 @@ def gen_eqPINN_dataset(df_sub):
         y_mask = np.array([mHv,mSv,mHl,mSl],    dtype=np.float32)
         smiles_str= str(smiles)
 
-        # === 원래 P ===
+        
         P_orig = (row["P"] * std_dict["P"]) + mean_dict["P"]
 
         model_in = (
             nodes, adj,
             np.array([T_val],  dtype=np.float32),
-            np.array([P_pred], dtype=np.float32),  # PINN은 satur P_pred(정규화) 입력
+            np.array([P_pred], dtype=np.float32), 
             np.array([tr_val], dtype=np.float32),
             np.array([pr_val], dtype=np.float32),
             np.array([af_val], dtype=np.float32),
             np.array([Tc_val], dtype=np.float32),
             np.array([Pc_val], dtype=np.float32),
         )
-        # label_in에 P_orig 추가
+        
         label_in = (
             y_true,
             y_mask,
             np.array([T_val],   dtype=np.float32),
-            np.array([P_orig],  dtype=np.float32),  # 추가!
+            np.array([P_orig],  dtype=np.float32),  
             smiles_str,
         )
         yield (model_in, label_in)
@@ -444,11 +440,11 @@ def make_eqPINN_dataset(df_sub, batch_size=16):
                 tf.TensorSpec((1,),tf.float32),
             ),
             (
-                tf.TensorSpec((4,),tf.float32),    # y_true
-                tf.TensorSpec((4,),tf.float32),    # y_mask
-                tf.TensorSpec((1,),tf.float32),    # T_val
-                tf.TensorSpec((1,),tf.float32),    # P_orig
-                tf.TensorSpec((),   tf.string),    # smiles_str
+                tf.TensorSpec((4,),tf.float32),    
+                tf.TensorSpec((4,),tf.float32),    
+                tf.TensorSpec((1,),tf.float32),    
+                tf.TensorSpec((1,),tf.float32),    
+                tf.TensorSpec((),   tf.string),    
             )
         )
     )
@@ -486,7 +482,7 @@ class SatPTrainer(tf.keras.Model):
         (model_in, p_true)= data
         with tf.GradientTape() as tape:
             p_pred= self.sat_model(model_in, training=True)
-            loss_val= tf.reduce_mean(tf.square(p_pred- p_true))  # MSE
+            loss_val= tf.reduce_mean(tf.square(p_pred- p_true))  
         grads= tape.gradient(loss_val, self.sat_model.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.sat_model.trainable_variables))
         self.loss_tracker.update_state(loss_val)
@@ -536,25 +532,25 @@ multi_model= tf.keras.Model(
 )
 
 ###############################################################################
-# 7. Custom PINN Loss (BC와 HS 제거됨)
+# 7. Custom PINN Loss 
 ###############################################################################
 def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lambda_pinn):
     def undo_norm(tensor, var_name):
         return tensor * std_dict[var_name] + mean_dict[var_name]
 
-    # y_pred => (batch,4) => (Hv, Sv, Hl, Sl) - 정규화 상태
+    
     Hv_pred_n = y_pred[:,0]
     Sv_pred_n = y_pred[:,1]
     Hl_pred_n = y_pred[:,2]
     Sl_pred_n = y_pred[:,3]
 
-    # y_true => (batch,4) => (Hv, Sv, Hl, Sl) - 정규화 상태
+    
     Hv_true_n = y_true[:,0]
     Sv_true_n = y_true[:,1]
     Hl_true_n = y_true[:,2]
     Sl_true_n = y_true[:,3]
 
-    # 역정규화
+  
     Hv_pred = undo_norm(Hv_pred_n, "Hv")
     Sv_pred = undo_norm(Sv_pred_n, "Sv")
     Hl_pred = undo_norm(Hl_pred_n, "Hl")
@@ -565,11 +561,11 @@ def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lam
     Hl_true = undo_norm(Hl_true_n, "Hl")
     Sl_true = undo_norm(Sl_true_n, "Sl")
 
-    # 필요 시 T의 역정규화
+    
     T_real = undo_norm(tf.reshape(T_norm,[-1]), "T")
     P_real = undo_norm(tf.reshape(P_norm,[-1]), "P")
 
-    # 1) MSE (마스크 적용)
+    
     diff_Hv = (Hv_pred - Hv_true) * mask[:,0]
     diff_Sv = (Sv_pred - Sv_true) * mask[:,1]
     diff_Hl = (Hl_pred - Hl_true) * mask[:,2]
@@ -580,7 +576,7 @@ def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lam
     sample_mse = sq_err / denom
     masked_mse = tf.reduce_mean(sample_mse)
 
-    # 2) 평형 데이터에 한해 PDE 항목 계산
+    
     sum_mask = tf.reduce_sum(mask, axis=-1)
     cond_eq = tf.equal(sum_mask, 4.0)
 
@@ -590,7 +586,7 @@ def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lam
     pde_each = tf.where(cond_eq, pde_each, tf.zeros_like(pde_each))
     pde_val = tf.reduce_mean(pde_each)
 
-    # 3) 최종 Loss: MSE + lambda_pinn * PDE
+   
     total_loss = masked_mse + lambda_pinn * pde_val
 
     return total_loss, masked_mse, pde_val
@@ -609,8 +605,8 @@ class MultiHeadPINNTrainer(tf.keras.Model):
         (model_in, (y_true, y_mask, T_val, P_orig, smiles_str))= data
         with tf.GradientTape() as tape:
             y_pred= self.base_model(model_in, training=True)
-            T_ = model_in[2]  # T_norm
-            P_ = model_in[3]  # P_norm (in eq stage => P_pred)
+            T_ = model_in[2]  
+            P_ = model_in[3]  
             tr_= model_in[4]
             pr_= model_in[5]
             total_loss, mse_val, pde_val = custom_pinn_loss(
@@ -657,7 +653,7 @@ class SatPTrainer(tf.keras.Model):
         (model_in, p_true)= data
         with tf.GradientTape() as tape:
             p_pred= self.sat_model(model_in, training=True)
-            loss_val= tf.reduce_mean(tf.square(p_pred- p_true))  # MSE
+            loss_val= tf.reduce_mean(tf.square(p_pred- p_true))  
         grads= tape.gradient(loss_val, self.sat_model.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.sat_model.trainable_variables))
         self.loss_tracker.update_state(loss_val)
@@ -677,6 +673,7 @@ class SatPTrainer(tf.keras.Model):
 ###############################################################################
 # 9. Pretrain => non-eq => MSE only
 ###############################################################################
+
 trainer_pre= MultiHeadPINNTrainer(base_model=multi_model, lambda_pinn=LAMBDA_PINN_PRETRAIN)
 trainer_pre.compile(optimizer=tf.keras.optimizers.Adam(LR_PRETRAIN))
 
@@ -756,7 +753,7 @@ else:
     )
     trainer_sat.save_weights("saturP_tf")
 
-# satur test ds if needed
+
 sat_test_ds= make_satur_dataset(df_eq_test_norm, BATCH_SIZE)
 test_satur= trainer_sat.evaluate(sat_test_ds)
 print(f"Satur Model Test Loss= {test_satur}")
@@ -764,6 +761,7 @@ print(f"Satur Model Test Loss= {test_satur}")
 ###############################################################################
 # 11. Predict saturP => eq df => 'P_pred'
 ###############################################################################
+
 p_train= model_satP.predict(sat_train_ds).flatten()
 df_eq_train_norm["P_pred"]= p_train
 
@@ -776,6 +774,7 @@ df_eq_test_norm["P_pred"]= p_test
 ###############################################################################
 # 12. Finetune => eq => PINN with P_pred
 ###############################################################################
+
 finetune_train_ds= make_eqPINN_dataset(df_eq_train_norm, BATCH_SIZE)
 finetune_val_ds=   make_eqPINN_dataset(df_eq_val_norm,   BATCH_SIZE)
 
@@ -806,7 +805,7 @@ else:
 ###############################################################################
 # 13. eq test => PINN with predicted P => Save CSV
 ###############################################################################
-# 1) Make test dataset (equilibrium + P_pred)
+
 finetune_test_ds = make_eqPINN_dataset(df_eq_test_norm, BATCH_SIZE)
 
 # 2) Evaluate
@@ -817,62 +816,53 @@ print(
   f"MSE={test_result['mse']:.4f}, PDE={test_result['pde']:.4f}"
 )
 
-# 다시 한 번 (같은) finetune_test_ds 만들어서, 예측 → CSV 저장
+
 finetune_test_ds = make_eqPINN_dataset(df_eq_test_norm, BATCH_SIZE)
 
-# --------------------------------------------
-# 14. non-eq 테스트도 함께 예측 → 하나의 CSV
-# --------------------------------------------
-test_results = []  # eq/noneq 모두 담을 공용 리스트
+
+test_results = [] 
 
 ###############################################################################
-# (A) non-eq 예측
+# (A) non-eq prediction
 ###############################################################################
+
 for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_dataset(df_non_test_norm, BATCH_SIZE):
     y_pred = trainer_fine.base_model.predict(model_inputs, verbose=0)
-    T_arr = model_inputs[2].numpy()  # (batch,1)
-    P_arr = model_inputs[3].numpy()  # (batch,1)
+    T_arr = model_inputs[2].numpy() 
+    P_arr = model_inputs[3].numpy() 
 
     batch_size_ = y_pred.shape[0]
 
     for i in range(batch_size_):
-        # -------------------------
-        # 1) 예측값 (정규화 상태)
-        # -------------------------
+
         Hv_pred_norm = y_pred[i, 0]
         Sv_pred_norm = y_pred[i, 1]
         Hl_pred_norm = y_pred[i, 2]
         Sl_pred_norm = y_pred[i, 3]
 
-        # -------------------------
-        # 2) 실제값 (정규화 상태)
-        # -------------------------
+
         Hv_true_norm = y_true[i, 0]
         Sv_true_norm = y_true[i, 1]
         Hl_true_norm = y_true[i, 2]
         Sl_true_norm = y_true[i, 3]
 
-        # 마스크
+
         maskHv_i = y_mask[i, 0]
         maskSv_i = y_mask[i, 1]
         maskHl_i = y_mask[i, 2]
         maskSl_i = y_mask[i, 3]
 
-        # -------------------------
-        # 3) T, P 역정규화
-        # -------------------------
+
         T_norm = float(T_arr[i, 0])
         P_norm = float(P_arr[i, 0])
 
         T_real = T_norm * std_dict["T"] + mean_dict["T"]
         P_real = P_norm * std_dict["P"] + mean_dict["P"]
 
-        # label에 들어있던 '원래 P'
+
         P_original = float(P_orig[i, 0])
 
-        # -------------------------
-        # 4) 예측값 역정규화 → float
-        # -------------------------
+
         if float(maskHv_i) == 1.0:
             Hv_pred_real = float(Hv_pred_norm * std_dict["Hv"] + mean_dict["Hv"])
         else:
@@ -893,9 +883,7 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
         else:
             Sl_pred_real = None
 
-        # -------------------------
-        # 5) 실제값(ground truth)도 역정규화 → float
-        # -------------------------
+
         if float(maskHv_i) == 1.0:
             Hv_true_real = float(Hv_true_norm * std_dict["Hv"] + mean_dict["Hv"])
         else:
@@ -916,9 +904,7 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
         else:
             Sl_true_real = None
 
-        # -------------------------
-        # 6) 결과 저장
-        # -------------------------
+
         smiles_py = smiles_str[i].numpy().decode("utf-8")
 
         test_results.append({
@@ -938,23 +924,23 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
         })
 
 ###############################################################################
-# (B) eq 예측
+# (B) eq prediction
 ###############################################################################
 for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test_ds:
     y_pred = trainer_fine.base_model.predict(model_inputs, verbose=0)
     T_arr = model_inputs[2].numpy()
-    P_arr = model_inputs[3].numpy()  # saturP_pred (정규화)
+    P_arr = model_inputs[3].numpy()  
 
     batch_size_ = y_pred.shape[0]
 
     for i in range(batch_size_):
-        # 1) 예측값
+
         Hv_pred_norm = y_pred[i, 0]
         Sv_pred_norm = y_pred[i, 1]
         Hl_pred_norm = y_pred[i, 2]
         Sl_pred_norm = y_pred[i, 3]
 
-        # 2) 실제값
+
         Hv_true_norm = y_true[i, 0]
         Sv_true_norm = y_true[i, 1]
         Hl_true_norm = y_true[i, 2]
@@ -965,16 +951,16 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
         maskHl_i = y_mask[i, 2]
         maskSl_i = y_mask[i, 3]
 
-        # 3) T, saturP_pred 역정규화 → float
+
         T_norm = float(T_arr[i, 0])
         P_norm = float(P_arr[i, 0])
         T_real = T_norm * std_dict["T"] + mean_dict["T"]
         P_sat_pred = P_norm * std_dict["P"] + mean_dict["P"]
 
-        # 실측 원래 P
+
         P_original = float(P_orig[i, 0])
 
-        # 4) 예측값 역정규화
+
         if float(maskHv_i) == 1.0:
             Hv_pred_real = float(Hv_pred_norm * std_dict["Hv"] + mean_dict["Hv"])
         else:
@@ -995,7 +981,7 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
         else:
             Sl_pred_real = None
 
-        # 5) 실제값 역정규화
+
         if float(maskHv_i) == 1.0:
             Hv_true_real = float(Hv_true_norm * std_dict["Hv"] + mean_dict["Hv"])
         else:
@@ -1035,10 +1021,10 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
         })
 
 # --------------------------------------------
-# (C) 최종 CSV 저장
+# (C) Save the final CSV
 # --------------------------------------------
 df_results = pd.DataFrame(test_results)
-df_results.to_csv("final_test_pred_all11111.csv", index=False)
-print("Saved final_test_pred_all.csv.")
+df_results.to_csv("final_results.csv", index=False)
+print("Saved final_results.csv.")
 print(df_results.head(20))
 print("===== Done Equilibrium Test & CSV Saving =====")
