@@ -5,7 +5,7 @@
 (2) eq data => separate saturP model => MSE only
 (3) eq data => use predicted saturP => PINN Finetune
 """
-   
+
 import os
 import numpy as np
 import pandas as pd
@@ -13,49 +13,59 @@ import rdkit
 import rdkit.Chem
 from rdkit.Chem import AllChem
 import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 import matplotlib.pyplot as plt
 
-# CPU mode ("-1" = CPU mode, "0" = GPU mode)
+# CPU mode (optional)
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
-###############################################################################
-# Hyperparameters
-###############################################################################
+
 EPOCHS_PRETRAIN = 1000
-EPOCHS_SATUR    = 500
+EPOCHS_SATUR    = 1000
 EPOCHS_FINETUNE = 1000
 
 LR_PRETRAIN     = 1e-4
 LR_SATUR        = 1e-4
 LR_FINETUNE     = 1e-4
 
-LAMBDA_PINN_PRETRAIN = 0.0   # Pretrain => no PINN
-LAMBDA_PINN_FINETUNE = 0.5   # Finetune => PINN on
-
+LAMBDA_PINN_PRETRAIN = 0.0   
+LAMBDA_PINN_FINETUNE = 0.5  
 BATCH_SIZE = 16
 
-early_stop = EarlyStopping(
-    monitor='val_loss',
-    patience=20,
-    min_delta=0.0001,
-    mode='min',
-    restore_best_weights=True,
+LOG_P_EPS = 1e-8 
+
+plateau = ReduceLROnPlateau(         
+    monitor="val_loss", factor=0.5, patience=15,
+    min_lr=1e-6, verbose=1
 )
 
-###############################################################################
-# 1. CSV Load
-###############################################################################
-csv_path = "dataset.csv"
+
+csv_path = "data.csv"
 df_all = pd.read_csv(csv_path)
-df_all = df_all.sample(frac=1, random_state=0).reset_index(drop=True)
+df_all = df_all.sample(frac=1, random_state=42).reset_index(drop=True)
 
 
 df_eq  = df_all[(df_all["maskHv"] + df_all["maskSv"] + df_all["maskHl"] + df_all["maskSl"]) == 4]
 df_non = df_all[(df_all["maskHv"] + df_all["maskSv"] + df_all["maskHl"] + df_all["maskSl"]) < 4]
 
-def split_df(df, ratio=(0.8,0.1,0.1), seed=0):
+
+ext_raw = pd.read_csv("all_ex.csv")
+mask_sum_ext = ext_raw[["maskHv","maskSv","maskHl","maskSl"]].fillna(1).sum(axis=1)
+ext_eq_raw  = ext_raw[mask_sum_ext == 4]   
+ext_non_raw = ext_raw[mask_sum_ext <  4] 
+
+
+vars_to_norm= ["T","P","Hv","Hl","Sv","Sl","Tc","Pc","af"]
+
+def apply_zscore(df_sub):
+    df_sub = df_sub.copy()
+    for c in vars_to_norm:                  
+        if c in df_sub.columns:
+            df_sub[c] = (df_sub[c] - mean_dict[c]) / std_dict[c]
+    return df_sub
+
+def split_df(df, ratio=(0.8,0.1,0.1), seed=42):
     df = df.sample(frac=1, random_state=seed).reset_index(drop=True)
     n   = df.shape[0]
     r1, r2, r3 = ratio
@@ -66,26 +76,21 @@ def split_df(df, ratio=(0.8,0.1,0.1), seed=0):
     test_df=  df.iloc[idx2:]
     return train_df,val_df,test_df
 
-df_non_train, df_non_val, df_non_test = split_df(df_non,(0.8,0.1,0.1), seed=0)
-df_eq_train,  df_eq_val,  df_eq_test  = split_df(df_eq,  (0.8,0.1,0.1), seed=0)
+df_non_train, df_non_val, df_non_test = split_df(df_non,(0.8,0.1,0.1), seed=42)
+df_eq_train,  df_eq_val,  df_eq_test  = split_df(df_eq,  (0.8,0.1,0.1), seed=42)
 
-###############################################################################
-# 2. Normalization
-###############################################################################
-vars_to_norm= ["T","P","Hv","Hl","Sv","Sl","Tc","Pc","af"]
 
 df_train_for_meanstd = pd.concat([df_non_train, df_eq_train], ignore_index=True)
 
-mean_dict, std_dict= {}, {}
+mean_dict, std_dict = {}, {}
 for c in vars_to_norm:
     mean_dict[c] = df_train_for_meanstd[c].mean()
     std_dict[c]  = df_train_for_meanstd[c].std() + 1e-12
 
-def apply_zscore(df_sub):
-    df_sub = df_sub.copy()
-    for c in vars_to_norm:
-        df_sub[c] = (df_sub[c] - mean_dict[c]) / std_dict[c]
-    return df_sub
+
+ext_eq_norm  = apply_zscore(ext_eq_raw)
+ext_non_norm = apply_zscore(ext_non_raw)
+
 
 df_non_train_norm = apply_zscore(df_non_train)
 df_non_val_norm   = apply_zscore(df_non_val)
@@ -95,9 +100,20 @@ df_eq_train_norm  = apply_zscore(df_eq_train)
 df_eq_val_norm    = apply_zscore(df_eq_val)
 df_eq_test_norm   = apply_zscore(df_eq_test)
 
-###############################################################################
-# 3. GNN/Utils
-###############################################################################
+
+df_non_val_norm = pd.concat([
+    df_non_val_norm,
+    ext_non_norm  
+], ignore_index=True)
+
+
+
+df_eq_val_norm_for_sat = pd.concat([
+    df_eq_val_norm,
+    ext_eq_norm   
+], ignore_index=True)
+
+
 my_elements = {
     6:  {"symbol":"C",  "value1":1.05, "value2":3.851, "value3":5.431, "value4":11.714, "value5":1.1346},
     8:  {"symbol":"O",  "value1":0.6,  "value2":3.5,   "value3":8.714, "value4":17.136, "value5":0.8597},
@@ -250,9 +266,7 @@ multi_model= tf.keras.Model(
 def undo_norm_np(x, var_name):
     return x * std_dict[var_name] + mean_dict[var_name]
 
-###############################################################################
-# 4. Saturation Dataset => eq => (graph, T, af) => P
-###############################################################################
+
 def gen_satur_dataset(df_sub):
     for idx, row in df_sub.iterrows():
         smiles = str(row["SMILES"])
@@ -262,15 +276,15 @@ def gen_satur_dataset(df_sub):
 
         T_val= row["T"]   
         af_val= row.get("af",0.0)
-        p_val= row["P"]   
+        P_real = row["P"] * std_dict["P"] + mean_dict["P"]
+        logP   = np.log(max(P_real, LOG_P_EPS))
 
-        model_in= (
-            nodes,
-            adj,
-            np.array([T_val], dtype=np.float32),
-            np.array([af_val],dtype=np.float32)
+        model_in = (
+            nodes, adj,
+            np.array([T_val],  dtype=np.float32),
+            np.array([af_val], dtype=np.float32),
         )
-        yield (model_in, np.array([p_val],dtype=np.float32))
+        yield (model_in, np.array([logP], dtype=np.float32))
 
 def make_satur_dataset(df_sub, batch_size=16):
     ds= tf.data.Dataset.from_generator(
@@ -287,9 +301,7 @@ def make_satur_dataset(df_sub, batch_size=16):
     )
     return ds.batch(batch_size)
 
-###############################################################################
-# 4. Non-eq Dataset => MSE
-###############################################################################
+
 def gen_non_dataset(df_sub):
     for idx, row in df_sub.iterrows():
         smiles = str(row["SMILES"])
@@ -297,8 +309,8 @@ def gen_non_dataset(df_sub):
         nodes = pad_array(nodes, max_graph_size)
         adj   = pad_matrix(adj,   max_graph_size)
 
-        T_val  = row["T"]   
-        P_val  = row["P"]    
+        T_val  = row["T"]    
+        P_val  = row["P"]   
         tr_val = row["tr"]
         pr_val = row["pr"]
         af_val = row.get("af",0.0)
@@ -315,7 +327,7 @@ def gen_non_dataset(df_sub):
         mHl = row["maskHl"]
         mSl = row["maskSl"]
 
-        
+
         P_orig = (row["P"] * std_dict["P"]) + mean_dict["P"]
 
         y_true = np.array([Hv_, Sv_, Hl_, Sl_], dtype=np.float32)
@@ -332,7 +344,7 @@ def gen_non_dataset(df_sub):
             np.array([Tc_val],dtype=np.float32),
             np.array([Pc_val],dtype=np.float32),
         )
-        
+
         label_in = (
             y_true,
             y_mask,
@@ -359,18 +371,16 @@ def make_non_dataset(df_sub, batch_size=16):
             ),
             (
                 tf.TensorSpec((4,), tf.float32),     
-                tf.TensorSpec((4,), tf.float32),     
-                tf.TensorSpec((1,), tf.float32),    
+                tf.TensorSpec((4,), tf.float32),   
+                tf.TensorSpec((1,), tf.float32),   
                 tf.TensorSpec((1,), tf.float32),     
-                tf.TensorSpec((),   tf.string),      
+                tf.TensorSpec((),   tf.string),     
             )
         )
     )
     return ds.batch(batch_size)
 
-###############################################################################
-# 4. eqPINN Dataset => use "P_pred" in place of real P
-###############################################################################
+
 def gen_eqPINN_dataset(df_sub):
 
     for idx, row in df_sub.iterrows():
@@ -379,8 +389,8 @@ def gen_eqPINN_dataset(df_sub):
         nodes = pad_array(nodes, max_graph_size)
         adj   = pad_matrix(adj,   max_graph_size)
 
-        T_val  = row["T"]         
-        P_pred = row["P_pred"]    
+        T_val  = row["T"]        
+        P_pred = row["P_pred"]   
         tr_val = row["tr"]
         pr_val = row["pr"]
         af_val = row.get("af",0.0)
@@ -401,25 +411,27 @@ def gen_eqPINN_dataset(df_sub):
         y_mask = np.array([mHv,mSv,mHl,mSl],    dtype=np.float32)
         smiles_str= str(smiles)
 
-        
+
         P_orig = (row["P"] * std_dict["P"]) + mean_dict["P"]
+        P_pred_raw  = row["P_pred"]
+        P_pred_norm = (P_pred_raw - mean_dict["P"]) / std_dict["P"]
 
         model_in = (
             nodes, adj,
             np.array([T_val],  dtype=np.float32),
-            np.array([P_pred], dtype=np.float32), 
+            np.array([P_pred_norm], dtype=np.float32), 
             np.array([tr_val], dtype=np.float32),
             np.array([pr_val], dtype=np.float32),
             np.array([af_val], dtype=np.float32),
             np.array([Tc_val], dtype=np.float32),
             np.array([Pc_val], dtype=np.float32),
         )
-        
+
         label_in = (
             y_true,
             y_mask,
             np.array([T_val],   dtype=np.float32),
-            np.array([P_orig],  dtype=np.float32),  
+            np.array([P_orig],  dtype=np.float32), 
             smiles_str,
         )
         yield (model_in, label_in)
@@ -440,37 +452,17 @@ def make_eqPINN_dataset(df_sub, batch_size=16):
                 tf.TensorSpec((1,),tf.float32),
             ),
             (
-                tf.TensorSpec((4,),tf.float32),    
+                tf.TensorSpec((4,),tf.float32),   
                 tf.TensorSpec((4,),tf.float32),    
                 tf.TensorSpec((1,),tf.float32),    
-                tf.TensorSpec((1,),tf.float32),    
-                tf.TensorSpec((),   tf.string),    
+                tf.TensorSpec((1,),tf.float32),   
+                tf.TensorSpec((),   tf.string),   
             )
         )
     )
     return ds.batch(batch_size)
 
-###############################################################################
-# 5. Saturation Model => (graph, T, af) => P
-###############################################################################
-sinput_n= tf.keras.Input((None,len(my_elements),5), name="ninput_sat")
-sinput_a= tf.keras.Input((None,None),               name="ainput_sat")
-sinput_T= tf.keras.Input(shape=(1,), name="T_sat")
-sinput_af=tf.keras.Input(shape=(1,), name="af_sat")
 
-sx, sA= GCNLayer("relu", reduce_dim=True)([sinput_n, sinput_a])
-sx, sA= GCNLayer("relu")([sx, sA])
-sx= GRLayer()([sx, sA])
-
-sx_comb= tf.keras.layers.Concatenate()([sx, sinput_T, sinput_af])
-sx= tf.keras.layers.Dense(128,"relu")(sx_comb)
-sx= tf.keras.layers.Dense(64,"relu")(sx)
-p_out= tf.keras.layers.Dense(1, activation=None)(sx)
-
-model_satP= tf.keras.Model(
-    inputs=[sinput_n, sinput_a, sinput_T, sinput_af],
-    outputs= p_out
-)
 
 class SatPTrainer(tf.keras.Model):
     def __init__(self, sat_model):
@@ -482,7 +474,7 @@ class SatPTrainer(tf.keras.Model):
         (model_in, p_true)= data
         with tf.GradientTape() as tape:
             p_pred= self.sat_model(model_in, training=True)
-            loss_val= tf.reduce_mean(tf.square(p_pred- p_true))  
+            loss_val= tf.reduce_mean(tf.square(p_pred- p_true)) 
         grads= tape.gradient(loss_val, self.sat_model.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.sat_model.trainable_variables))
         self.loss_tracker.update_state(loss_val)
@@ -499,9 +491,7 @@ class SatPTrainer(tf.keras.Model):
     def metrics(self):
         return [self.loss_tracker]
 
-###############################################################################
-# 6. PINN Model => multi_model
-###############################################################################
+
 ninput= tf.keras.Input((None,len(my_elements),5), name="ninput")
 ainput= tf.keras.Input((None,None),               name="ainput")
 
@@ -531,26 +521,23 @@ multi_model= tf.keras.Model(
     outputs=outputs
 )
 
-###############################################################################
-# 7. Custom PINN Loss 
-###############################################################################
 def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lambda_pinn):
     def undo_norm(tensor, var_name):
         return tensor * std_dict[var_name] + mean_dict[var_name]
 
-    
+
     Hv_pred_n = y_pred[:,0]
     Sv_pred_n = y_pred[:,1]
     Hl_pred_n = y_pred[:,2]
     Sl_pred_n = y_pred[:,3]
 
-    
+
     Hv_true_n = y_true[:,0]
     Sv_true_n = y_true[:,1]
     Hl_true_n = y_true[:,2]
     Sl_true_n = y_true[:,3]
 
-  
+
     Hv_pred = undo_norm(Hv_pred_n, "Hv")
     Sv_pred = undo_norm(Sv_pred_n, "Sv")
     Hl_pred = undo_norm(Hl_pred_n, "Hl")
@@ -561,11 +548,10 @@ def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lam
     Hl_true = undo_norm(Hl_true_n, "Hl")
     Sl_true = undo_norm(Sl_true_n, "Sl")
 
-    
     T_real = undo_norm(tf.reshape(T_norm,[-1]), "T")
     P_real = undo_norm(tf.reshape(P_norm,[-1]), "P")
 
-    
+
     diff_Hv = (Hv_pred - Hv_true) * mask[:,0]
     diff_Sv = (Sv_pred - Sv_true) * mask[:,1]
     diff_Hl = (Hl_pred - Hl_true) * mask[:,2]
@@ -576,7 +562,6 @@ def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lam
     sample_mse = sq_err / denom
     masked_mse = tf.reduce_mean(sample_mse)
 
-    
     sum_mask = tf.reduce_sum(mask, axis=-1)
     cond_eq = tf.equal(sum_mask, 4.0)
 
@@ -586,14 +571,12 @@ def custom_pinn_loss(y_pred, y_true, mask, T_norm, P_norm, tr_norm, pr_norm, lam
     pde_each = tf.where(cond_eq, pde_each, tf.zeros_like(pde_each))
     pde_val = tf.reduce_mean(pde_each)
 
-   
+
     total_loss = masked_mse + lambda_pinn * pde_val
 
     return total_loss, masked_mse, pde_val
 
-###############################################################################
-# 8. Trainer classes
-###############################################################################
+
 class MultiHeadPINNTrainer(tf.keras.Model):
     def __init__(self, base_model, lambda_pinn):
         super().__init__()
@@ -653,7 +636,7 @@ class SatPTrainer(tf.keras.Model):
         (model_in, p_true)= data
         with tf.GradientTape() as tape:
             p_pred= self.sat_model(model_in, training=True)
-            loss_val= tf.reduce_mean(tf.square(p_pred- p_true))  
+            loss_val= tf.reduce_mean(tf.square(p_pred- p_true)) 
         grads= tape.gradient(loss_val, self.sat_model.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.sat_model.trainable_variables))
         self.loss_tracker.update_state(loss_val)
@@ -670,9 +653,6 @@ class SatPTrainer(tf.keras.Model):
     def metrics(self):
         return [self.loss_tracker]
 
-###############################################################################
-# 9. Pretrain => non-eq => MSE only
-###############################################################################
 
 trainer_pre= MultiHeadPINNTrainer(base_model=multi_model, lambda_pinn=LAMBDA_PINN_PRETRAIN)
 trainer_pre.compile(optimizer=tf.keras.optimizers.Adam(LR_PRETRAIN))
@@ -680,7 +660,7 @@ trainer_pre.compile(optimizer=tf.keras.optimizers.Adam(LR_PRETRAIN))
 pretrain_train_ds= make_non_dataset(df_non_train_norm, BATCH_SIZE)
 pretrain_val_ds=   make_non_dataset(df_non_val_norm,   BATCH_SIZE)
 
-# dummy pass => create variables
+
 dummy_nodes= np.zeros((1,max_graph_size,len(my_elements),5),dtype=np.float32)
 dummy_adj=   np.zeros((1,max_graph_size,max_graph_size),dtype=np.float32)
 dummy_T=     np.zeros((1,1),dtype=np.float32)
@@ -699,26 +679,36 @@ _ = multi_model([
 ])
 
 print("Model variables created (Pretrain).")
+
+early_pre = tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=20,
+    min_delta=1e-4,
+    restore_best_weights=True,
+    verbose=1,
+)
+
 if os.path.isdir("pretrain_tf"):
     print("Loading pretrain_tf ...")
     trainer_pre.load_weights("pretrain_tf")
 else:
     print("No pretrain => train from scratch (non-eq MSE).")
-    hist_pre= trainer_pre.fit(
+    hist_pre = trainer_pre.fit(
         pretrain_train_ds,
-        validation_data= pretrain_val_ds,
-        epochs= EPOCHS_PRETRAIN,
-        callbacks=[early_stop]
+        validation_data = pretrain_val_ds,
+        epochs          = EPOCHS_PRETRAIN,
+        callbacks       = [early_pre],         
+        verbose         = 2,
     )
     trainer_pre.save_weights("pretrain_tf")
 
-###############################################################################
-# 10. Saturation Model => eq => MSE
-###############################################################################
+
 sinput_n= tf.keras.Input((None,len(my_elements),5), name="ninput_sat")
 sinput_a= tf.keras.Input((None,None),               name="ainput_sat")
 sinput_T= tf.keras.Input(shape=(1,), name="T_sat")
 sinput_af=tf.keras.Input(shape=(1,), name="af_sat")
+
+
 
 sx, sA= GCNLayer("relu", reduce_dim=True)([sinput_n, sinput_a])
 sx, sA= GCNLayer("relu")([sx, sA])
@@ -727,53 +717,86 @@ sx= GRLayer()([sx, sA])
 sx_comb= tf.keras.layers.Concatenate()([sx, sinput_T, sinput_af])
 sx= tf.keras.layers.Dense(128,"relu")(sx_comb)
 sx= tf.keras.layers.Dense(64,"relu")(sx)
-p_out= tf.keras.layers.Dense(1)(sx)
+logP_out = tf.keras.layers.Dense(1, activation="linear")(sx)
+P_out    = tf.keras.layers.Lambda(lambda z: tf.exp(z), name="P_MPa")(logP_out)
 
-model_satP= tf.keras.Model(
+model_satP = tf.keras.Model(
     inputs=[sinput_n, sinput_a, sinput_T, sinput_af],
-    outputs= p_out
+    outputs=logP_out           
 )
+
+def sat_predict_rawP(ds):         
+    logP = model_satP.predict(ds, verbose=0).flatten()
+    return np.exp(logP)     
+
+def _copy_encoder_weights(src, dst):
+
+    from types import FunctionType 
+    src_enc = [l for l in src.layers if isinstance(l, (GCNLayer, GRLayer))]
+    dst_enc = [l for l in dst.layers if isinstance(l, (GCNLayer, GRLayer))]
+    assert len(src_enc) == len(dst_enc), "[ERR] encoder layer error"
+    for l_src, l_dst in zip(src_enc, dst_enc):
+        l_dst.set_weights(l_src.get_weights())
+
+
+_copy_encoder_weights(multi_model, model_satP)
 
 trainer_sat= SatPTrainer(model_satP)
 trainer_sat.compile(optimizer=tf.keras.optimizers.Adam(LR_SATUR))
 
+early_sat = tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=50,          
+    min_delta=5e-4,
+    restore_best_weights=True,
+    verbose=1,
+)
+
+plateau = tf.keras.callbacks.ReduceLROnPlateau(
+    monitor="val_loss",
+    patience=15,
+    factor=0.5,
+    min_lr=1e-6,
+    verbose=1,
+)
+
+hist_sat = trainer_sat.fit(
+    make_satur_dataset(df_eq_train_norm, BATCH_SIZE),
+    validation_data = make_satur_dataset(df_eq_val_norm_for_sat, BATCH_SIZE),
+    epochs          = EPOCHS_SATUR,
+    callbacks       = [early_sat, plateau], 
+    verbose         = 2,
+)
+
 sat_train_ds= make_satur_dataset(df_eq_train_norm, BATCH_SIZE)
-sat_val_ds  = make_satur_dataset(df_eq_val_norm,   BATCH_SIZE)
+sat_val_ds  = make_satur_dataset(df_eq_val_norm_for_sat,   BATCH_SIZE)
 
 if os.path.isdir("saturP_tf"):
     print("Loading saturP_tf ...")
     trainer_sat.load_weights("saturP_tf")
 else:
     print("No saturP => train eq satur model(MSE).")
-    hist_sat= trainer_sat.fit(
-        sat_train_ds,
-        validation_data= sat_val_ds,
-        epochs= EPOCHS_SATUR,
-        callbacks=[early_stop]
-    )
     trainer_sat.save_weights("saturP_tf")
-
 
 sat_test_ds= make_satur_dataset(df_eq_test_norm, BATCH_SIZE)
 test_satur= trainer_sat.evaluate(sat_test_ds)
 print(f"Satur Model Test Loss= {test_satur}")
 
-###############################################################################
-# 11. Predict saturP => eq df => 'P_pred'
-###############################################################################
+df_eq_val_norm_with_ext = pd.concat(
+    [df_eq_val_norm, ext_eq_norm],
+    ignore_index=True
+)
 
-p_train= model_satP.predict(sat_train_ds).flatten()
-df_eq_train_norm["P_pred"]= p_train
+p_train_raw = sat_predict_rawP(make_satur_dataset(df_eq_train_norm,BATCH_SIZE))
+df_eq_train_norm["P_pred"] = p_train_raw
 
-p_val= model_satP.predict(sat_val_ds).flatten()
-df_eq_val_norm["P_pred"]= p_val
+val_eq_df  = df_eq_val_norm_with_ext
+p_val_raw  = sat_predict_rawP(make_satur_dataset(val_eq_df, BATCH_SIZE)) 
+val_eq_df["P_pred"] = p_val_raw
+df_eq_val_norm = val_eq_df
 
-p_test= model_satP.predict(sat_test_ds).flatten()
-df_eq_test_norm["P_pred"]= p_test
-
-###############################################################################
-# 12. Finetune => eq => PINN with P_pred
-###############################################################################
+p_test_raw = sat_predict_rawP(sat_test_ds) 
+df_eq_test_norm["P_pred"] = p_test_raw
 
 finetune_train_ds= make_eqPINN_dataset(df_eq_train_norm, BATCH_SIZE)
 finetune_val_ds=   make_eqPINN_dataset(df_eq_val_norm,   BATCH_SIZE)
@@ -789,26 +812,43 @@ _ = multi_model([
 ])
 print("Variables created (Finetune).")
 
+early_fin = tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=30,
+    min_delta=1e-4,
+    restore_best_weights=True,
+    verbose=1,
+)
+
 if os.path.isdir("finetune_tf"):
     print("Loading finetune_tf ...")
     trainer_fine.load_weights("finetune_tf")
 else:
     print("No finetune => run eq PINN with saturP.")
-    hist_fine= trainer_fine.fit(
+    hist_fine = trainer_fine.fit(
         finetune_train_ds,
-        validation_data= finetune_val_ds,
-        epochs= EPOCHS_FINETUNE,
-        callbacks=[early_stop]
+        validation_data = finetune_val_ds,
+        epochs          = EPOCHS_FINETUNE,
+        callbacks       = [early_fin],          
+        verbose         = 2,
     )
     trainer_fine.save_weights("finetune_tf")
 
-###############################################################################
-# 13. eq test => PINN with predicted P => Save CSV
-###############################################################################
+def plot_history(histories, labels, fname):
+    plt.figure(figsize=(5,4), dpi=150)
+    for h, lb in zip(histories, labels):
+        plt.plot(h.history["loss"], lw=1.4, label=f"{lb}-train")
+        if "val_loss" in h.history:
+            plt.plot(h.history["val_loss"], lw=1.4, ls="--", label=f"{lb}-val")
+    plt.yscale("log"); plt.xlabel("epoch"); plt.ylabel("MSE (log scale)")
+    plt.legend(); plt.tight_layout(); plt.savefig(fname); plt.close()
+
+plot_history([hist_pre, hist_sat, hist_fine],
+             ["Pre", "SatP(logP)", "Finetune"],
+             "loss_curve.png")
 
 finetune_test_ds = make_eqPINN_dataset(df_eq_test_norm, BATCH_SIZE)
 
-# 2) Evaluate
 test_result = trainer_fine.evaluate(finetune_test_ds, return_dict=True)
 print("===== Finetune eq test (PINN with saturP) =====")
 print(
@@ -816,30 +856,23 @@ print(
   f"MSE={test_result['mse']:.4f}, PDE={test_result['pde']:.4f}"
 )
 
-
 finetune_test_ds = make_eqPINN_dataset(df_eq_test_norm, BATCH_SIZE)
 
 
 test_results = [] 
 
-###############################################################################
-# (A) non-eq prediction
-###############################################################################
-
 for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_dataset(df_non_test_norm, BATCH_SIZE):
     y_pred = trainer_fine.base_model.predict(model_inputs, verbose=0)
-    T_arr = model_inputs[2].numpy() 
-    P_arr = model_inputs[3].numpy() 
+    T_arr = model_inputs[2].numpy()
+    P_arr = model_inputs[3].numpy()
 
     batch_size_ = y_pred.shape[0]
 
     for i in range(batch_size_):
-
         Hv_pred_norm = y_pred[i, 0]
         Sv_pred_norm = y_pred[i, 1]
         Hl_pred_norm = y_pred[i, 2]
         Sl_pred_norm = y_pred[i, 3]
-
 
         Hv_true_norm = y_true[i, 0]
         Sv_true_norm = y_true[i, 1]
@@ -852,16 +885,13 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
         maskHl_i = y_mask[i, 2]
         maskSl_i = y_mask[i, 3]
 
-
         T_norm = float(T_arr[i, 0])
         P_norm = float(P_arr[i, 0])
 
         T_real = T_norm * std_dict["T"] + mean_dict["T"]
         P_real = P_norm * std_dict["P"] + mean_dict["P"]
 
-
         P_original = float(P_orig[i, 0])
-
 
         if float(maskHv_i) == 1.0:
             Hv_pred_real = float(Hv_pred_norm * std_dict["Hv"] + mean_dict["Hv"])
@@ -882,7 +912,6 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
             Sl_pred_real = float(Sl_pred_norm * std_dict["Sl"] + mean_dict["Sl"])
         else:
             Sl_pred_real = None
-
 
         if float(maskHv_i) == 1.0:
             Hv_true_real = float(Hv_true_norm * std_dict["Hv"] + mean_dict["Hv"])
@@ -904,7 +933,6 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
         else:
             Sl_true_real = None
 
-
         smiles_py = smiles_str[i].numpy().decode("utf-8")
 
         test_results.append({
@@ -923,13 +951,11 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in make_non_data
             "Sl_true":       Sl_true_real,
         })
 
-###############################################################################
-# (B) eq prediction
-###############################################################################
+
 for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test_ds:
     y_pred = trainer_fine.base_model.predict(model_inputs, verbose=0)
     T_arr = model_inputs[2].numpy()
-    P_arr = model_inputs[3].numpy()  
+    P_arr = model_inputs[3].numpy()
 
     batch_size_ = y_pred.shape[0]
 
@@ -939,7 +965,6 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
         Sv_pred_norm = y_pred[i, 1]
         Hl_pred_norm = y_pred[i, 2]
         Sl_pred_norm = y_pred[i, 3]
-
 
         Hv_true_norm = y_true[i, 0]
         Sv_true_norm = y_true[i, 1]
@@ -951,15 +976,12 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
         maskHl_i = y_mask[i, 2]
         maskSl_i = y_mask[i, 3]
 
-
         T_norm = float(T_arr[i, 0])
         P_norm = float(P_arr[i, 0])
         T_real = T_norm * std_dict["T"] + mean_dict["T"]
         P_sat_pred = P_norm * std_dict["P"] + mean_dict["P"]
 
-
         P_original = float(P_orig[i, 0])
-
 
         if float(maskHv_i) == 1.0:
             Hv_pred_real = float(Hv_pred_norm * std_dict["Hv"] + mean_dict["Hv"])
@@ -980,7 +1002,6 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
             Sl_pred_real = float(Sl_pred_norm * std_dict["Sl"] + mean_dict["Sl"])
         else:
             Sl_pred_real = None
-
 
         if float(maskHv_i) == 1.0:
             Hv_true_real = float(Hv_true_norm * std_dict["Hv"] + mean_dict["Hv"])
@@ -1020,11 +1041,9 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
             "Sl_true":       Sl_true_real,
         })
 
-# --------------------------------------------
-# (C) Save the final CSV
-# --------------------------------------------
 df_results = pd.DataFrame(test_results)
-df_results.to_csv("final_results.csv", index=False)
-print("Saved final_results.csv.")
+df_results.to_csv("final_test_pred_all11111.csv", index=False)
+print("Saved final_test_pred_all.csv.")
 print(df_results.head(20))
 print("===== Done Equilibrium Test & CSV Saving =====")
+
