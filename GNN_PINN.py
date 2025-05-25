@@ -41,7 +41,7 @@ plateau = ReduceLROnPlateau(
 )
 
 
-csv_path = "data.csv"
+csv_path = "dataset.csv"
 df_all = pd.read_csv(csv_path)
 df_all = df_all.sample(frac=1, random_state=42).reset_index(drop=True)
 
@@ -50,10 +50,10 @@ df_eq  = df_all[(df_all["maskHv"] + df_all["maskSv"] + df_all["maskHl"] + df_all
 df_non = df_all[(df_all["maskHv"] + df_all["maskSv"] + df_all["maskHl"] + df_all["maskSl"]) < 4]
 
 
-ext_raw = pd.read_csv("all_ex.csv")
-mask_sum_ext = ext_raw[["maskHv","maskSv","maskHl","maskSl"]].fillna(1).sum(axis=1)
-ext_eq_raw  = ext_raw[mask_sum_ext == 4]   
-ext_non_raw = ext_raw[mask_sum_ext <  4] 
+#ext_raw = pd.read_csv("all_ex.csv")
+#mask_sum_ext = ext_raw[["maskHv","maskSv","maskHl","maskSl"]].fillna(1).sum(axis=1)
+#ext_eq_raw  = ext_raw[mask_sum_ext == 4]   
+#ext_non_raw = ext_raw[mask_sum_ext <  4] 
 
 
 vars_to_norm= ["T","P","Hv","Hl","Sv","Sl","Tc","Pc","af"]
@@ -88,8 +88,8 @@ for c in vars_to_norm:
     std_dict[c]  = df_train_for_meanstd[c].std() + 1e-12
 
 
-ext_eq_norm  = apply_zscore(ext_eq_raw)
-ext_non_norm = apply_zscore(ext_non_raw)
+#ext_eq_norm  = apply_zscore(ext_eq_raw)
+#ext_non_norm = apply_zscore(ext_non_raw)
 
 
 df_non_train_norm = apply_zscore(df_non_train)
@@ -102,15 +102,13 @@ df_eq_test_norm   = apply_zscore(df_eq_test)
 
 
 df_non_val_norm = pd.concat([
-    df_non_val_norm,
-    ext_non_norm  
+    df_non_val_norm, 
 ], ignore_index=True)
 
 
 
 df_eq_val_norm_for_sat = pd.concat([
-    df_eq_val_norm,
-    ext_eq_norm   
+    df_eq_val_norm,  
 ], ignore_index=True)
 
 
@@ -1042,7 +1040,7 @@ for (model_inputs, (y_true, y_mask, T_val, P_orig, smiles_str)) in finetune_test
         })
 
 df_results = pd.DataFrame(test_results)
-df_results.to_csv("final_test_pred_all11111.csv", index=False)
+df_results.to_csv("final_test_pred_all.csv", index=False)
 print("Saved final_test_pred_all.csv.")
 print(df_results.head(20))
 print("===== Done Equilibrium Test & CSV Saving =====")
