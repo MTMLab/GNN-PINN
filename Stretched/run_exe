@@ -1,0 +1,33 @@
+#!/bin/bash
+rm -rf lammps/*
+mkdir lammps/monomer_0
+cp back_S/* lammps/monomer_0
+if ! command -v conda &> /dev/null; then
+    echo "❌ Conda not found. Please install Anaconda or Miniconda."
+    exit 1
+fi
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate AmberTools23 || {
+    echo "❌ AmberTools23 environment not found."
+    exit 1
+}
+cp structures/monomer_0.smi test.smi
+taskset --cpu-list 0 obabel -ismi test.smi -omol2 --gen3d --partialcharge eem -O monomer_com1.mol2
+antechamber -i monomer_com1.mol2 -fi mol2 -fo mol2 -o monomer_com2.mol2 -pf y -at gaff
+../Util/Util_monomer_modify_4_new_make/exe
+cp monomer_reorder2.mol2 mol2tolt/test/monomer.mol2
+cp polymer_new.lt moltemplates/polymer.lt
+cp system_new.lt moltemplates/system.lt
+cd mol2tolt/
+./run.sh
+cp test/monomer.lt ../moltemplates/monomer_add.lt
+cd ..
+cd moltemplates
+../../Util/moltemplate-master/moltemplate/scripts/moltemplate.sh system.lt > moltemplate.log 2>&1
+../../Util/Util_data_mol_modify/exe
+cp system2.data ../lammps/monomer_0/system.data
+cd ..
+cd lammps/monomer_0
+../../../Util/lammps-2Aug2023/src/lmp_serial -i run.in.npt2
+../../../Util/lammps-2Aug2023/src/lmp_serial -i run.in.npt2_pppm
+../../../Util/Util_Polymer_Output2/exe

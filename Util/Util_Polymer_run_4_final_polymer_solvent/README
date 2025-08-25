@@ -1,0 +1,4 @@
+Utility to convert xyz-format to VASP-format.
+
+Move atoms to the center of the cell.
+

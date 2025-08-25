@@ -1,0 +1,7 @@
+import solvent.lt
+write_once("Data Boundary") {
+0.0    50 xlo xhi
+0.0    50  ylo yhi
+0.0    50  zlo zhi
+}
+solvents = new solvent

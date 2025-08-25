@@ -1,0 +1,46 @@
+import "gaff.lt"
+solvent inherits GAFF{
+#include 'solvent_add.lt'
+write("Data Atoms"){
+    $atom:atom1 $mol @atom:c3 -0.4161 1.068 -0.085 0.025
+    $atom:atom2 $mol @atom:c3 -0.041 2.584 -0.024 -0.006
+    $atom:atom3 $mol @atom:n -0.4603 3.087 0.074 -1.362
+    $atom:atom4 $mol @atom:c3 -0.0909 3.309 1.333 -2.024
+    $atom:atom5 $mol @atom:c3 -0.2218 3.448 0.943 -3.483
+    $atom:atom6 $mol @atom:c3 -0.3187 4.01 -0.473 -3.434
+    $atom:atom7 $mol @atom:c 0.4752 3.453 -1.012 -2.141
+    $atom:atom8 $mol @atom:o -0.5417 3.394 -2.19 -1.831
+    $atom:atom9 $mol @atom:hc 0.1549 0.711 -0.17 1.056
+    $atom:atom10 $mol @atom:hc 0.1801 0.699 -0.95 -0.538
+    $atom:atom11 $mol @atom:hc 0.1636 0.627 0.814 -0.418
+    $atom:atom12 $mol @atom:h1 0.1455 2.989 -0.933 0.452
+    $atom:atom13 $mol @atom:h1 0.1216 2.952 0.835 0.566
+    $atom:atom14 $mol @atom:h1 0.129 4.23 1.774 -1.629
+    $atom:atom15 $mol @atom:h1 0.1243 2.469 2.014 -1.858
+    $atom:atom16 $mol @atom:hc 0.1315 4.077 1.633 -4.05
+    $atom:atom17 $mol @atom:hc 0.1416 2.458 0.924 -3.956
+    $atom:atom18 $mol @atom:hc 0.1609 5.103 -0.47 -3.374
+    $atom:atom19 $mol @atom:hc 0.1622 3.678 -1.07 -4.287
+}
+write('Data Bond List') {
+    $bond:bond1 $atom:atom1 $atom:atom2
+    $bond:bond2 $atom:atom2 $atom:atom3
+    $bond:bond3 $atom:atom3 $atom:atom4
+    $bond:bond4 $atom:atom4 $atom:atom5
+    $bond:bond5 $atom:atom5 $atom:atom6
+    $bond:bond6 $atom:atom6 $atom:atom7
+    $bond:bond7 $atom:atom3 $atom:atom7
+    $bond:bond8 $atom:atom7 $atom:atom8
+    $bond:bond9 $atom:atom1 $atom:atom9
+    $bond:bond10 $atom:atom1 $atom:atom10
+    $bond:bond11 $atom:atom1 $atom:atom11
+    $bond:bond12 $atom:atom2 $atom:atom12
+    $bond:bond13 $atom:atom2 $atom:atom13
+    $bond:bond14 $atom:atom4 $atom:atom14
+    $bond:bond15 $atom:atom4 $atom:atom15
+    $bond:bond16 $atom:atom5 $atom:atom16
+    $bond:bond17 $atom:atom5 $atom:atom17
+    $bond:bond18 $atom:atom6 $atom:atom18
+    $bond:bond19 $atom:atom6 $atom:atom19
+}
+}

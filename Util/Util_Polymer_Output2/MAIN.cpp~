@@ -1,0 +1,235 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+using namespace std;
+
+int main() {
+
+        std::sprintf; 
+        std::ofstream outfile;
+        char command0[100]; 
+  char command1[100]; 
+  char command2[100]; 
+  char command3[100]; 
+  char command4[100]; 
+  char command5[100]; 
+        string data0;
+        string data1;
+        string string1, string2;
+        int N_node;
+    //    int system;
+   //     int m,mm,mmm,mmm,mmmm;
+   
+    // Empty vector holding all names from file
+         vector<string> names;
+         
+    //         // Read names from file LineUp.txt
+                 ifstream in("name.txt");
+                     if(!in.is_open())
+                             cout << "Unable to open file\n";
+    
+    //                             // this is wrong, by the way: while(in.good()){
+                                     string word;
+                                        while(getline(in, word))
+                                                     names.push_back(word);
+    //
+                                                         sort(names.begin(), names.end());
+    //
+    //                                                         // Loop to print names
+
+
+                                                       
+    
+
+
+      ofstream outputFile5("TDA_initial", ios::out);
+  if (!outputFile5) {
+    cerr << "Spec could not be opened" << endl;
+    exit(1);
+  }
+
+  sprintf (command0, "rm Spec.dat"); 
+   int systemRet0 =  system(command0);
+
+  sprintf (command0, "rm Spec_B_PH0.dat"); 
+   int systemRet11110 =  system(command0);
+
+
+  sprintf (command0, "rm Spec_B_PH1.dat"); 
+   int systemRet11111 =  system(command0);
+
+  sprintf (command0, "rm Spec_B_PH2.dat"); 
+   int systemRet11112 =  system(command0);
+
+  sprintf (command0, "rm List.dat");
+   int systemRet30 =  system(command0);
+
+    outfile.open("List.dat", std::ios_base::app);
+
+  for ( size_t i = 0; i < names.size(); i++ ) {
+  
+//      sprintf (command1, "cp %s.cssr data0.cssr", names[i].c_str());
+//   int systemRet11 =  system(command1);
+
+      sprintf (command1, "/home/yongjin/Research/Util/zeo++-0.2.2/network -r example.rad -holo 1.5 %s.cssr", names[i].c_str());
+   int systemRet5 =  system(command1);
+
+    sprintf (command2, "mv %s.stats data0.stats", names[i].c_str());
+ int systemRet222 =  system(command2);
+
+  sprintf (command1, "mv %s_holo.txt data0_holo.txt", names[i].c_str());
+   int systemRet6 =  system(command1);
+
+
+  N_node = 0;
+
+  ifstream inputFile21("data0.stats",ios::in);
+  if (!inputFile21) {
+    cerr << "inputFile31 could not be opened" << endl;
+  //  exit(1);
+  }
+   inputFile21 >> string1 >> string2;
+   inputFile21 >> N_node;
+
+   if ( N_node != 0 ) {
+    outfile << names[i].c_str() << endl;   
+   }
+
+//  outfile.open("Spec.dat", std::ios_base::app);
+//  outfile2.open("list.dat", std::ios_base::app);
+//  for ( i = 0; i < N_bin; i++ ) {
+//  outfile << (1-x1[i]) << "      ";
+//  outfile2 << string1 << endl;
+//  }
+
+      sprintf (command2, "rm data0.stats");
+ int systemRet2222 =  system(command2);
+
+      sprintf (command2, "rm data0_holo.txt");
+ int systemRet22222 =  system(command2);
+
+  }
+
+
+  for (size_t i = 0; i < names.size(); i++) {
+    
+    // data0 = names[i];
+  sprintf (command1, "cp %s.cssr config.cssr", names[i].c_str());
+   int systemRet61 =  system(command1);
+      sprintf (command2, "/home/yongjin/Research/Util/Util_Cif_Poscar_XYZ/exe");
+ int systemRet222221 =  system(command2);
+  sprintf (command1, "/home/yongjin/Research/Util/zeo++-0.2.2_random_sampling/network -ha -sa 1.5 1.5 2000 %s.cssr", names[i].c_str());
+   int systemRet51 =  system(command1);
+        sprintf (command2, "/home/yongjin/Research/Util/Util_Random_Selection/exe");
+ int systemRet222223 =  system(command2);
+        sprintf (command2, "cp Pore2.xyz config.xyz");
+ int systemRet222226 =  system(command2);
+          sprintf (command2, "/home/yongjin/Research/Util/Util_Dis_XYZ/exe");
+ int systemRet222228 =  system(command2);
+  sprintf (command1, "mv distance.dat %s.dat", names[i].c_str());
+   int systemRet52 =  system(command1);
+  sprintf (command1, "/home/yongjin/bin/perseusLin distmat %s.dat %s", names[i].c_str(), names[i].c_str());
+   int systemRet53 =  system(command1);
+  }
+  
+
+  for (size_t i = 0; i < names.size(); i++) {
+    
+
+  sprintf (command1, "cp %s_0.dat data0.txt", names[i].c_str());
+   int systemRet6 =  system(command1);
+
+
+   for (size_t j = i+1; j < names.size(); j++) {
+
+  sprintf (command1, "cp %s_0.dat data1.txt", names[j].c_str());
+   int systemRet65 =  system(command1);
+
+         sprintf (command2, "/home/yongjin/bin/bottleneck data0.txt data1.txt");
+ int systemRet22223 =  system(command2);
+
+sprintf (command4, "/home/yongjin/Research/Util/Util_write_B_PH0_output/exe" );
+int systemRet41 =  system(command4);
+
+         sprintf (command2, "rm data1.txt");
+ int systemRet222232 =  system(command2);
+
+   }
+
+         sprintf (command2, "rm data0.txt");
+ int systemRet222251 =  system(command2);
+
+
+  }
+
+   for (size_t i = 0; i < names.size(); i++) {
+    
+
+  sprintf (command1, "cp %s_1.dat data0.txt", names[i].c_str());
+   int systemRet611 =  system(command1);
+
+
+   for (size_t j = i+1; j < names.size(); j++) {
+
+  sprintf (command1, "cp %s_1.dat data1.txt", names[j].c_str());
+   int systemRet6133 =  system(command1);
+
+         sprintf (command2, "/home/yongjin/bin/bottleneck data0.txt data1.txt");
+ int systemRet2222333 =  system(command2);
+
+sprintf (command4, "/home/yongjin/Research/Util/Util_write_B_PH1_output/exe" );
+int systemRet41 =  system(command4);
+
+         sprintf (command2, "rm data1.txt");
+ int systemRet2222332 =  system(command2);
+
+   }
+
+         sprintf (command2, "rm data0.txt");
+ int systemRet2222538 =  system(command2);
+
+
+  }
+
+
+  for (size_t i = 0; i < names.size(); i++) {
+    
+
+  sprintf (command1, "cp %s_2.dat data0.txt", names[i].c_str());
+   int systemRet657 =  system(command1);
+
+
+   for (size_t j = i+1; j < names.size(); j++) {
+
+  sprintf (command1, "cp %s_2.dat data1.txt", names[j].c_str());
+   int systemRet6176 =  system(command1);
+
+         sprintf (command2, "/home/yongjin/bin/bottleneck data0.txt data1.txt");
+ int systemRet2222398 =  system(command2);
+
+sprintf (command4, "/home/yongjin/Research/Util/Util_write_B_PH2_output/exe" );
+int systemRet4199 =  system(command4);
+
+         sprintf (command2, "rm data1.txt");
+ int systemRet2222395 =  system(command2);
+
+   }
+
+         sprintf (command2, "rm data0.txt");
+ int systemRet2222592 =  system(command2);
+
+
+  }
+
+
+  return 0;
+
+
+                                                         
+}
+                                       

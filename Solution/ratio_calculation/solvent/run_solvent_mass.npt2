@@ -1,0 +1,66 @@
+# PREREQUISITES:
+#
+#     You must use moltemplate.sh to create 3 files:
+#        system.data  system.in.init  system.in.settings
+#     (Follow the instructions in README_setup.sh, 
+#      or run the file as a script using ./README_setup.sh)
+
+# ------------------------------- Initialization Section --------------------
+
+include         "system.in.init"
+
+#boundary p p f
+
+# ------------------------------- Atom Definition Section -------------------
+
+read_data       "system.data" 
+
+# ------------------------------- Settings Section --------------------------
+
+include         "system.in.settings"
+
+# ------------------------------- Run Section -------------------------------
+
+
+
+
+
+# -- minimization protocol --
+
+#change_box all x final 0 200 y final 0 200 z final 0 200
+
+#fix walls all wall/reflect zlo EDGE zhi EDGE
+
+neigh_modify delay 0 every 1 check yes
+
+timestep        1
+
+thermo          5000
+
+thermo_style multi
+dump 2 all xyz  1000 dump.xyz
+dump 3 all xyz  20000 dump_20000.xyz
+dump 4 all xyz  50000 dump_50000.xyz
+dump_modify 2 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+dump_modify 3 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+dump_modify 4 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+
+
+minimize 1.0e-4 1.0e-6 100000 400000
+
+velocity all create 1.0 38092034 rot yes mom yes dist gaussian
+
+variable mass equal density*vol
+
+thermo_style custom step temp etotal epair vol density v_mass
+
+fix massAvg all ave/time 1 1 1 v_mass file solvent_mass.txt 
+#fix polymer_mass all print 1 v_mass file polymer_mass.txt 
+ 
+ fix             fxnpt2 all npt temp 300.0 300.0 100.0 aniso 1 1 1000 drag 1.0
+ run             0
+ unfix fxnpt2
+
+
+
+write_data   system_after_npt.data

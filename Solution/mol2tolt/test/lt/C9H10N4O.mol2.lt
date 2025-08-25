@@ -1,0 +1,86 @@
+import "gaff.lt"
+cation inherits GAFF{
+#include 'C9H10N4O.mol2_add.lt'
+write("Data Atoms"){
+    $atom:atom1 $mol @atom:nh -0.616 3.715 -1.241 1.476
+    $atom:atom2 $mol @atom:ca 0.36 2.493 -0.479 1.021
+    $atom:atom3 $mol @atom:nb -0.401 2.64 0.942 0.531
+    $atom:atom4 $mol @atom:ca 0.215 1.434 1.728 0.071
+    $atom:atom5 $mol @atom:n -0.497 1.622 3.164 -0.375
+    $atom:atom6 $mol @atom:ca -0.047 0.063 1.022 -0.007
+    $atom:atom7 $mol @atom:ca -0.181 -1.15 1.712 -0.66
+    $atom:atom8 $mol @atom:ca 0.016 -2.533 1.035 -0.621
+    $atom:atom9 $mol @atom:c3 -0.059 -3.755 1.746 -1.231
+    $atom:atom10 $mol @atom:oh -0.619 -4.645 0.728 -1.901
+    $atom:atom11 $mol @atom:ca -0.155 -2.682 -0.38 -0.034
+    $atom:atom12 $mol @atom:ca -0.186 -1.452 -1.106 0.539
+    $atom:atom13 $mol @atom:ca 0.145 -0.079 -0.409 0.542
+    $atom:atom14 $mol @atom:nb -0.404 1.134 -1.137 1.068
+    $atom:atom15 $mol @atom:hn 0.34 4.713 -0.756 1.447
+    $atom:atom16 $mol @atom:hn 0.337 3.615 -2.284 1.842
+    $atom:atom17 $mol @atom:hn 0.361 2.635 3.501 -0.68
+    $atom:atom18 $mol @atom:ha 0.257 -1.03 2.735 -1.148
+    $atom:atom19 $mol @atom:h1 0.214 -4.334 2.284 -0.409
+    $atom:atom20 $mol @atom:h1 0.207 -3.402 2.505 -2.006
+    $atom:atom21 $mol @atom:ho 0.352 -5.525 1.244 -2.337
+    $atom:atom22 $mol @atom:ha 0.255 -3.701 -0.89 -0.026
+    $atom:atom23 $mol @atom:ha 0.25 -1.558 -2.16 0.961
+    $atom:atom24 $mol @atom:c 0.256 0.478 4.158 -0.427
+    $atom:atom25 $mol @atom:ca -0.02 -0.783 4.005 0.452
+    $atom:atom26 $mol @atom:ca -0.147 -0.853 2.941 1.565
+    $atom:atom27 $mol @atom:ca -0.183 -2.14 2.784 2.397
+    $atom:atom28 $mol @atom:ca 0.028 -3.343 3.71 2.14
+    $atom:atom29 $mol @atom:ca -0.164 -3.255 4.806 1.064
+    $atom:atom30 $mol @atom:ca -0.164 -1.974 4.955 0.224
+    $atom:atom31 $mol @atom:c -0.019 -4.634 3.546 2.961
+    $atom:atom32 $mol @atom:o -0.475 -5.811 4.455 2.702
+    $atom:atom33 $mol @atom:o -0.499 0.613 5.382 -1.3
+    $atom:atom34 $mol @atom:ha 0.263 -4.139 5.504 0.886
+    $atom:atom35 $mol @atom:ha 0.26 -1.91 5.765 -0.576
+    $atom:atom36 $mol @atom:ha 0.233 -2.201 1.982 3.206
+    $atom:atom37 $mol @atom:ha 0.258 0.04 2.26 1.762
+    $atom:atom38 $mol @atom:h4 0.229 -4.704 2.735 3.759
+}
+write('Data Bond List') {
+    $bond:bond1 $atom:atom1 $atom:atom2
+    $bond:bond2 $atom:atom2 $atom:atom3
+    $bond:bond3 $atom:atom3 $atom:atom4
+    $bond:bond4 $atom:atom4 $atom:atom5
+    $bond:bond5 $atom:atom4 $atom:atom6
+    $bond:bond6 $atom:atom6 $atom:atom7
+    $bond:bond7 $atom:atom7 $atom:atom8
+    $bond:bond8 $atom:atom8 $atom:atom9
+    $bond:bond9 $atom:atom9 $atom:atom10
+    $bond:bond10 $atom:atom8 $atom:atom11
+    $bond:bond11 $atom:atom11 $atom:atom12
+    $bond:bond12 $atom:atom12 $atom:atom13
+    $bond:bond13 $atom:atom6 $atom:atom13
+    $bond:bond14 $atom:atom13 $atom:atom14
+    $bond:bond15 $atom:atom2 $atom:atom14
+    $bond:bond16 $atom:atom1 $atom:atom15
+    $bond:bond17 $atom:atom1 $atom:atom16
+    $bond:bond18 $atom:atom5 $atom:atom17
+    $bond:bond19 $atom:atom7 $atom:atom18
+    $bond:bond20 $atom:atom9 $atom:atom19
+    $bond:bond21 $atom:atom9 $atom:atom20
+    $bond:bond22 $atom:atom10 $atom:atom21
+    $bond:bond23 $atom:atom11 $atom:atom22
+    $bond:bond24 $atom:atom12 $atom:atom23
+    $bond:bond25 $atom:atom5 $atom:atom24
+    $bond:bond26 $atom:atom24 $atom:atom25
+    $bond:bond27 $atom:atom25 $atom:atom26
+    $bond:bond28 $atom:atom26 $atom:atom27
+    $bond:bond29 $atom:atom27 $atom:atom28
+    $bond:bond30 $atom:atom28 $atom:atom29
+    $bond:bond31 $atom:atom29 $atom:atom30
+    $bond:bond32 $atom:atom25 $atom:atom30
+    $bond:bond33 $atom:atom28 $atom:atom31
+    $bond:bond34 $atom:atom31 $atom:atom32
+    $bond:bond35 $atom:atom24 $atom:atom33
+    $bond:bond36 $atom:atom29 $atom:atom34
+    $bond:bond37 $atom:atom30 $atom:atom35
+    $bond:bond38 $atom:atom27 $atom:atom36
+    $bond:bond39 $atom:atom26 $atom:atom37
+    $bond:bond40 $atom:atom31 $atom:atom38
+}
+}

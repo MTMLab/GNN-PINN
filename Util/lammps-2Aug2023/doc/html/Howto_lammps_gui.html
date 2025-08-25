@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8.6.3. Using the LAMMPS GUI &mdash; LAMMPS documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/lammps.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/lammps.ico"/>
+    <link rel="canonical" href="https://docs.lammps.org/Howto_lammps_gui.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=87a62f44"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script async="async" src="_static/mathjax/es5/tex-mml-chtml.js?v=cadf963e"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8.6.4. PyLammps Tutorial" href="Howto_pylammps.html" />
+    <link rel="prev" title="8.6.2. LAMMPS GitHub tutorial" href="Howto_github.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="Manual.html">
+            
+              <img src="_static/lammps-logo.png" class="logo" alt="Logo"/>
+          </a>
+            <div class="lammps_version">Version: <b>2 Aug 2023</b></div>
+            <div class="lammps_release">git info: stable 2Aug2023 update4</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Install.html">2. Install LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Build.html">3. Build LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Run_head.html">4. Run LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Commands.html">5. Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Packages.html">6. Optional packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speed.html">7. Accelerate performance</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="Howto.html">8. Howto discussions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Howto.html#general-howto">8.1. General howto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Howto.html#settings-howto">8.2. Settings howto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Howto.html#analysis-howto">8.3. Analysis howto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Howto.html#force-fields-howto">8.4. Force fields howto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Howto.html#packages-howto">8.5. Packages howto</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Howto.html#tutorials-howto">8.6. Tutorials howto</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="Howto_cmake.html">8.6.1. Using CMake with LAMMPS tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Howto_github.html">8.6.2. LAMMPS GitHub tutorial</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">8.6.3. Using the LAMMPS GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Howto_pylammps.html">8.6.4. PyLammps Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Howto_wsl.html">8.6.5. Using LAMMPS on Windows 10 with WSL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">9. Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tools.html">10. Auxiliary tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Errors.html">11. Errors</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Programmer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Library.html">1. LAMMPS Library Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python_head.html">2. Use Python with LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modify.html">3. Modifying &amp; extending LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Developer.html">4. Information for Developers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Command Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="commands_list.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fixes.html">Fixes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="computes.html">Computes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pairs.html">Pair Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bonds.html">Bond Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="angles.html">Angle Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dihedrals.html">Dihedral Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impropers.html">Improper Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dumps.html">Dump Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fix_modify_atc_commands.html">fix_modify AtC commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Bibliography.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="Manual.html">LAMMPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="Manual.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="Howto.html"><span class="section-number">8. </span>Howto discussions</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8.6.3. </span>Using the LAMMPS GUI</li>
+      <li class="wy-breadcrumbs-aside">
+          <a href="https://www.lammps.org"><img src="_static/lammps-logo.png" width="64" height="16" alt="LAMMPS Homepage"></a> | <a href="Commands_all.html">Commands</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="Howto_github.html" class="btn btn-neutral float-left" title="8.6.2. LAMMPS GitHub tutorial" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Howto_pylammps.html" class="btn btn-neutral float-right" title="8.6.4. PyLammps Tutorial" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><span class="math notranslate nohighlight">\(\renewcommand{\AA}{\text{Å}}\)</span></p>
+<section id="using-the-lammps-gui">
+<h1><span class="section-number">8.6.3. </span>Using the LAMMPS GUI<a class="headerlink" href="#using-the-lammps-gui" title="Permalink to this heading"></a></h1>
+<p>LAMMPS GUI is a simple graphical text editor that is linked to the
+<a class="reference internal" href="Library.html#lammps-c-api"><span class="std std-ref">LAMMPS C-library interface</span></a> and thus can run LAMMPS
+directly using the contents of the editor’s text buffer as input.</p>
+<p>This is similar to what people traditionally would do to run LAMMPS:
+using a regular text editor to edit the input and run the necessary
+commands, possibly including the text editor, too, from a command line
+terminal window.  That is quite effective when running LAMMPS on
+high-performance computing facilities and when you are very proficient
+in using the command line.  The main benefit of a GUI application is
+that this integrates well with graphical desktop environments and many
+basic tasks can be done directly from within the GUI without switching
+to a text console or requiring external programs or scripts to extract
+data from the generated output.  This makes it easier for beginners to
+get started running simple LAMMPS simulations and thus very suitable for
+tutorials on LAMMPS.  But also makes it easier to switch to a full
+featured text editor and more sophisticated visualization and analysis
+tools.</p>
+<hr class="docutils" />
+<p>The following text provides a detailed tour of the features and
+functionality of the LAMMPS GUI.  This document describes LAMMPS GUI
+version 1.2.</p>
+<section id="main-window">
+<h2>Main window<a class="headerlink" href="#main-window" title="Permalink to this heading"></a></h2>
+<p>When LAMMPS GUI starts, it will show the main window with either an
+empty buffer, or have a file loaded. In the latter case it may look like
+the following:</p>
+<a class="reference internal image-reference" href="_images/lammps-gui-main.png"><img alt="_images/lammps-gui-main.png" class="align-center" src="_images/lammps-gui-main.png" style="width: 422.0px; height: 245.0px;" /></a>
+<p>There is the menu bar at the top, then the main editor buffer with the
+input file contents in the center with line numbers on the left and the
+input colored according to the LAMMPS input file syntax.  At the bottom
+is the status bar, which shows the status of LAMMPS execution on the
+left (“Ready.” when idle) and the current working directory on the
+right.  The size of the main window will be stored when exiting and
+restored when starting again.  The name of the current file in the
+buffer is shown in the window title and the text <cite>*modified*</cite> is added
+in case the buffer has modifications that are not yet saved to a file.</p>
+<section id="opening-files">
+<h3>Opening Files<a class="headerlink" href="#opening-files" title="Permalink to this heading"></a></h3>
+<p>The LAMMPS GUI application will try to open the first command line
+argument as input file, further arguments are ignored.  When no
+argument is given LAMMPS GUI will start with an empty buffer.
+Files can also be opened via the <code class="docutils literal notranslate"><span class="pre">File</span></code> menu or by drag-and-drop
+of a file from a file manager to the editor window.  Only one
+file can be open at a time, so opening a new file with a filled
+buffer will close this buffer and in case the buffer has unsaved
+modifications will ask to either cancel the load, discard the
+changes or save them.</p>
+</section>
+<section id="running-lammps">
+<h3>Running LAMMPS<a class="headerlink" href="#running-lammps" title="Permalink to this heading"></a></h3>
+<p>From within the LAMMPS GUI main window LAMMPS can be started either from
+the <code class="docutils literal notranslate"><span class="pre">Run</span></code> menu, by the hotkey <cite>Ctrl-Enter</cite> (<cite>Command-Enter</cite> on macOS),
+or by clicking on the green button in the status bar.  LAMMPS runs in a
+separate thread, so the GUI stays responsive and thus it is able to
+interact with the calculation and access its data.  It is important to
+note, that LAMMPS is using the contents of the input buffer for the run,
+<strong>not</strong> the file it was read from. If there are unsaved changes in the
+buffer, they <em>will</em> be used.</p>
+<a class="reference internal image-reference" href="_images/lammps-gui-running.png"><img alt="_images/lammps-gui-running.png" class="align-center" src="_images/lammps-gui-running.png" style="width: 654.0px; height: 97.5px;" /></a>
+<p>While LAMMPS is running, the contents of the status bar change: on the
+left side there is a text indicating that LAMMPS is running, which will
+contain the selected number of threads, if thread-parallel acceleration
+was selected in the <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> dialog.  On the right side, a
+progress bar is shown that displays the estimated progress on the
+current <a class="reference internal" href="run.html"><span class="doc">run command</span></a>.  Additionally, two windows will open:
+the log window with the captured screen output and the chart window with
+a line graph created from the thermodynamic output of the run.</p>
+<p>The run can be stopped cleanly by using either the <code class="docutils literal notranslate"><span class="pre">Stop</span> <span class="pre">LAMMPS</span></code> entry
+in the <code class="docutils literal notranslate"><span class="pre">Run</span></code> menu, the hotkey <cite>Ctrl-/</cite> (<cite>Command-/</cite> on macOS), or
+clicking on the red button in the status bar.  This will cause that the
+running LAMMPS process will complete the current iteration and then
+stop.  This is equivalent to the command <a class="reference internal" href="timer.html"><span class="doc">timer timeout 0</span></a>
+and implemented by calling the <a class="reference internal" href="Library_utility.html#_CPPv420lammps_force_timeoutPv" title="lammps_force_timeout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">lammps_force_timeout()</span></code></a> function
+of the LAMMPS C-library interface.</p>
+</section>
+<section id="viewing-snapshot-images">
+<h3>Viewing Snapshot Images<a class="headerlink" href="#viewing-snapshot-images" title="Permalink to this heading"></a></h3>
+<p>By selecting the <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">Image</span></code> entry in the <code class="docutils literal notranslate"><span class="pre">Run</span></code> menu, by hitting
+the <cite>Ctrl-I</cite> (<cite>Command-I</cite> on macOS) hotkey or by clicking on the
+“palette” button in the status bar, LAMMPS GUI will issue a
+<a class="reference internal" href="dump_image.html"><span class="doc">write_dump image</span></a> command and read the resulting
+snapshot image into an image viewer window.  When possible, LAMMPS
+GUI will try to detect which elements the atoms correspond to (via
+their mass) and then colorize them accordingly. Otherwise just some
+predefined sequence of colors are assigned to different atom types.</p>
+<a class="reference internal image-reference" href="_images/lammps-gui-image.png"><img alt="_images/lammps-gui-image.png" class="align-center" src="_images/lammps-gui-image.png" style="width: 520.0px; height: 425.5px;" /></a>
+<p>The default image size, some default image quality settings, the view
+style and some colors can be changed in the <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> dialog
+window.  From the image viewer window further adjustments can be made:
+actual image size, high-quality rendering, anti-aliasing, view style,
+display of box or axes, zoom factor. The the image can be rotated
+horizontally and vertically and it is possible to only display the atoms
+within a predefined group (default is “all”).  After each change, the
+image is rendered again and the display updated.  The small palette icon
+on the top left will be colored while LAMMPS is running to render the
+image and it will be grayed out again, when it is done.  When there are
+many items to show and high quality images with anti-aliasing are
+requested, re-rendering can take several seconds.  From the <code class="docutils literal notranslate"><span class="pre">File</span></code>
+menu, the shown image can be saved to a file permanently or copied into
+the cut-n-paste buffer for pasting into another application.</p>
+</section>
+<section id="editor-functions">
+<h3>Editor Functions<a class="headerlink" href="#editor-functions" title="Permalink to this heading"></a></h3>
+<p>The editor has most the usual functionality that similar programs have:
+text selection via mouse or with cursor moves while holding the Shift
+key, Cut, Copy, Paste, Undo, Redo.  All of these editing functions are
+available via hotkeys.  When trying to exit the editor with a modified
+buffer, a dialog will pop up asking whether to cancel the quit, or don’t
+save or save the buffer’s contents to a file.</p>
+</section>
+<section id="context-specific-help">
+<h3>Context Specific Help<a class="headerlink" href="#context-specific-help" title="Permalink to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/lammps-gui-popup-help.png"><img alt="_images/lammps-gui-popup-help.png" class="align-center" src="_images/lammps-gui-popup-help.png" style="width: 438.0px; height: 295.5px;" /></a>
+<p>A unique feature of the LAMMPS GUI is the option to look up the
+documentation for the command in the current line.  This can be achieved
+by either clicking the right mouse button or by using the <cite>Ctrl-?</cite>
+hotkey.  When clicking the mouse there are additional entries in the
+context menu that will open the corresponding documentation page in the
+online LAMMPS documentation.  When using the hotkey, the first of those
+entries will be chosen directly.</p>
+</section>
+</section>
+<section id="menu">
+<h2>Menu<a class="headerlink" href="#menu" title="Permalink to this heading"></a></h2>
+<p>The menu bar the entries <code class="docutils literal notranslate"><span class="pre">File</span></code>, <code class="docutils literal notranslate"><span class="pre">Edit</span></code>, <code class="docutils literal notranslate"><span class="pre">Run</span></code>, <code class="docutils literal notranslate"><span class="pre">View</span></code>, and <code class="docutils literal notranslate"><span class="pre">About</span></code>.
+Instead of using the mouse to click on them, the individual menus can also
+be activated by hitting the <cite>Alt</cite> key together with the corresponding underlined
+letter, that is <cite>Alt-f</cite> will activate the <code class="docutils literal notranslate"><span class="pre">File</span></code> menu.  For the corresponding
+activated sub-menus, also the underlined letter, together with the <cite>Alt</cite> key can
+be used to select instead of the mouse.</p>
+<section id="file">
+<h3>File<a class="headerlink" href="#file" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">File</span></code> menu offers the usual options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">New</span></code> will clear the current buffer and reset the file name to <code class="docutils literal notranslate"><span class="pre">*unknown*</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Open</span></code> will open a dialog to select a new file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Save</span></code> will save the current file; if the file name is <code class="docutils literal notranslate"><span class="pre">*unknown*</span></code>
+a dialog will open to select a new file name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Save</span> <span class="pre">As</span></code> will open a dialog to select and new file name and save
+the buffer to it</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quit</span></code> will exit LAMMPS GUI. If there are unsaved changes, a dialog
+will appear to either cancel the quit, save or don’t save the file.</p></li>
+</ul>
+<p>In addition, up to 5 recent file names will be listed after the <code class="docutils literal notranslate"><span class="pre">Open</span></code>
+entry that allows to re-open recent files. This list is stored when
+quitting and recovered when starting again.</p>
+</section>
+<section id="edit">
+<h3>Edit<a class="headerlink" href="#edit" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Edit</span></code> menu offers the usual editor functions like <code class="docutils literal notranslate"><span class="pre">Undo</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Redo</span></code>, <code class="docutils literal notranslate"><span class="pre">Cut</span></code>, <code class="docutils literal notranslate"><span class="pre">Copy</span></code>, <code class="docutils literal notranslate"><span class="pre">Paste</span></code>, but also offers to open the
+<code class="docutils literal notranslate"><span class="pre">Preferences</span></code> dialog and to delete all stored preferences so they
+will be reset to their defaults.</p>
+</section>
+<section id="run">
+<h3>Run<a class="headerlink" href="#run" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Run</span></code> menu allows to start and stop a LAMMPS process.  Rather than
+calling the LAMMPS executable as a separate executable, the LAMMPS GUI
+is linked to the LAMMPS library and thus can run LAMMPS internally
+through the <a class="reference internal" href="Library.html#lammps-c-api"><span class="std std-ref">LAMMPS C-library interface</span></a>.
+Specifically, a LAMMPS instance will be created by calling
+<a class="reference internal" href="Library_create.html#_CPPv418lammps_open_no_mpiiPPcPPv" title="lammps_open_no_mpi"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">lammps_open_no_mpi()</span></code></a> and then the buffer contents run by
+calling <a class="reference internal" href="Library_execute.html#_CPPv422lammps_commands_stringPvPKc" title="lammps_commands_string"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">lammps_commands_string()</span></code></a>.  Certain commands and
+features are only available, after a LAMMPS instance is created.  Its
+presence is indicated by a small LAMMPS <code class="docutils literal notranslate"><span class="pre">L</span></code> logo in the status bar at
+the bottom left of the main window.</p>
+<p>The LAMMPS calculation will be run in a concurrent thread so that the
+GUI will stay responsive and will be updated during the run.  This can
+be used to tell the running LAMMPS instance to stop at the next
+timestep.  The <code class="docutils literal notranslate"><span class="pre">Stop</span> <span class="pre">LAMMPS</span></code> entry will do this by calling
+<a class="reference internal" href="Library_utility.html#_CPPv420lammps_force_timeoutPv" title="lammps_force_timeout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">lammps_force_timeout()</span></code></a>, which is equivalent to a <a class="reference internal" href="timer.html"><span class="doc">timer
+timeout 0</span></a> command.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">Variables</span></code> entry will open a dialog box where <a class="reference internal" href="variable.html"><span class="doc">index style variables</span></a>
+can be set. Those variables will be passed to the LAMMPS instance when
+it is created and are thus set <em>before</em> a run is started.</p>
+<a class="reference internal image-reference" href="_images/lammps-gui-variables.png"><img alt="_images/lammps-gui-variables.png" class="align-center" src="_images/lammps-gui-variables.png" style="width: 232.5px; height: 175.5px;" /></a>
+<p>The <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">Variables</span></code> dialog will be pre-populated with entries that are
+set as index variables in the input and any variables that are used but
+not defined as far as the built-in parser can detect them.  New rows for
+additional variables can be added through the <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Row</span></code> button and
+existing rows deleted by clicking on the <code class="docutils literal notranslate"><span class="pre">X</span></code> icons on the right.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">Image</span></code> entry will send a <a class="reference internal" href="dump_image.html"><span class="doc">dump image</span></a>
+command to the LAMMPS instance, read the resulting file, and show it in
+an <code class="docutils literal notranslate"><span class="pre">Image</span> <span class="pre">Viewer</span></code> window.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">in</span> <span class="pre">OVITO</span></code> entry will launch <a class="reference external" href="https://ovito.org">OVITO</a>
+with a <a class="reference internal" href="write_data.html"><span class="doc">data file</span></a> of the current state of the system.
+This option is only available, if the LAMMPS GUI can find the OVITO
+executable in the system path.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">in</span> <span class="pre">VMD</span></code> entry will instead launch VMD, also to load a
+<a class="reference internal" href="write_data.html"><span class="doc">data file</span></a> of the current state of the system.  This
+option is only available, if the LAMMPS GUI can find the VMD executable
+in the system path.</p>
+</section>
+<section id="view">
+<h3>View<a class="headerlink" href="#view" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">View</span></code> menu offers to show or hide the three optional windows
+with log output, graphs, or images.  The default settings for those
+can be changed in the <code class="docutils literal notranslate"><span class="pre">Preferences</span> <span class="pre">dialog</span></code>.</p>
+</section>
+<section id="about">
+<h3>About<a class="headerlink" href="#about" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">About</span></code> menu finally offers a couple of dialog windows and an
+option to launch the LAMMPS online documentation in a web browser.  The
+<code class="docutils literal notranslate"><span class="pre">About</span> <span class="pre">LAMMPS</span> <span class="pre">GUI</span></code> entry displays a dialog with a summary of the
+configuration settings of the LAMMPS library in use and the version
+number of LAMMPS GUI itself.  The <code class="docutils literal notranslate"><span class="pre">Quick</span> <span class="pre">Help</span></code> displays a dialog with
+a minimal description of LAMMPS GUI.  And <code class="docutils literal notranslate"><span class="pre">LAMMPS</span> <span class="pre">Manual</span></code> will open
+the main page of this LAMMPS documentation at <a class="reference external" href="https://docs.lammps.org/">https://docs.lammps.org/</a>.</p>
+</section>
+</section>
+<section id="preferences">
+<h2>Preferences<a class="headerlink" href="#preferences" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> dialog allows to customize some of the behavior
+and looks of the LAMMPS GUI application.  The settings are grouped
+and each group is displayed within a tab.</p>
+<p><a class="reference internal" href="_images/lammps-gui-prefs-general.png"><img alt="guiprefs1" src="_images/lammps-gui-prefs-general.png" style="width: 25%;" /></a>  <a class="reference internal" href="_images/lammps-gui-prefs-accel.png"><img alt="guiprefs2" src="_images/lammps-gui-prefs-accel.png" style="width: 25%;" /></a>  <a class="reference internal" href="_images/lammps-gui-prefs-image.png"><img alt="guiprefs3" src="_images/lammps-gui-prefs-image.png" style="width: 25%;" /></a></p>
+<section id="general-settings">
+<h3>General Settings:<a class="headerlink" href="#general-settings" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><em>Echo input to log:</em> when checked, all input commands, including
+variable expansions, will be echoed to the log window. This is
+equivalent to using <cite>-echo screen</cite> at the command line.  There is no
+log <em>file</em> produced since it always uses <cite>-log none</cite>.</p></li>
+<li><p><em>Include citation details:</em> when checked full citation info will be
+included to the log window.  This is equivalent to using <cite>-cite
+screen</cite> on the command line.</p></li>
+<li><p><em>Show log window by default:</em> when checked, the screen output of a
+LAMMPS run will be collected in a log window during the run</p></li>
+<li><p><em>Show chart window by default:</em> when checked, the thermodynamic
+output of a LAMMPS run will be collected and displayed in a chart
+window as line graphs.</p></li>
+<li><p><em>Replace log window on new run:</em> when checked, an existing log
+window will be replaced on a new LAMMPS run, otherwise each run will
+create a new log window.</p></li>
+<li><p><em>Replace chart window on new run:</em> when checked, an existing chart
+window will be replaced on a new LAMMPS run, otherwise each run will
+create a new chart window.</p></li>
+<li><p><em>Replace image window on new render:</em> when checked, an existing
+chart window will be replaced when a new snapshot image is requested,
+otherwise each command will create a new image window.</p></li>
+<li><p><em>Path to LAMMPS Shared Library File:</em> this options is only available
+when LAMMPS GUI was compiled to load the LAMMPS library at run time
+instead of being linked to it directly.  With the <code class="docutils literal notranslate"><span class="pre">Browse..</span></code> button
+or by changing the text, a different shared library file with a
+different compilation of LAMMPS with different settings or from a
+different version can be loaded.  After this setting was changed,
+LAMMPS GUI needs to be re-launched.</p></li>
+<li><p><em>Select Default Font:</em> Opens a font selection dialog where the type
+and size for the default font (used for everything but the editor and
+log) of the application can be set.</p></li>
+<li><p><em>Select Text Font:</em> Opens a font selection dialog where the type and
+size for the text editor and log font of the application can be set.</p></li>
+</ul>
+</section>
+<section id="accelerators">
+<h3>Accelerators:<a class="headerlink" href="#accelerators" title="Permalink to this heading"></a></h3>
+<p>This tab enables to select which accelerator package is used and is
+equivalent to using the <cite>-suffix</cite> and <cite>-package</cite> flags on the command
+line.  Only settings supported by the LAMMPS library and local hardware
+are available.  The <cite>Number of threads</cite> field allows to set the maximum
+number of threads for the accelerator packages that use threads.</p>
+</section>
+<section id="snapshot-image">
+<h3>Snapshot Image:<a class="headerlink" href="#snapshot-image" title="Permalink to this heading"></a></h3>
+<p>This tab allows to set some defaults for the snapshot images displayed
+in the <code class="docutils literal notranslate"><span class="pre">Image</span> <span class="pre">Viewer</span></code> window, like its dimensions and the zoom factor
+applied.  The <em>Antialias</em> switch requests to render images with twice
+the number of pixels for width and height and then smoothly scales the
+image back to the requested size.  This produces higher quality images
+with smoother edges at the expense of requiring more CPU time to render
+the image.  The <em>HQ Image mode</em> option turns on using a screen space
+ambient occlusion mode (SSAO) when rendering images.  This is also more
+time consuming, but produces a more ‘spatial’ representation of the
+system.  The <em>VDW Style</em> checkbox selects whether atoms are represented
+by space filling spheres when checked or by smaller spheres and stick.
+Finally there are a couple of drop down lists to select the background
+and box color.</p>
+</section>
+</section>
+<section id="hotkeys">
+<h2>Hotkeys<a class="headerlink" href="#hotkeys" title="Permalink to this heading"></a></h2>
+<p>Almost all functionality is accessible from the menu or via hotkeys.
+The following hotkeys are available (On macOS use the Command key
+instead of Ctrl/Control).</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hotkey</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Hotkey</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Hotkey</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Hotkey</p></th>
+<th class="head"><p>Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ctrl+N</p></td>
+<td><p>New File</p></td>
+<td><p>Ctrl+Z</p></td>
+<td><p>Undo edit</p></td>
+<td><p>Ctrl+Enter</p></td>
+<td><p>Run LAMMPS</p></td>
+<td><p>Ctrl+Shift+A</p></td>
+<td><p>About LAMMPS GUI</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+O</p></td>
+<td><p>Open File</p></td>
+<td><p>Ctrl+Shift+Z</p></td>
+<td><p>Redo edit</p></td>
+<td><p>Ctrl+/</p></td>
+<td><p>Stop Active Run</p></td>
+<td><p>Ctrl+Shift+H</p></td>
+<td><p>Quick Help</p></td>
+</tr>
+<tr class="row-even"><td><p>CTRL+S</p></td>
+<td><p>Save File</p></td>
+<td><p>Ctrl+C</p></td>
+<td><p>Copy text</p></td>
+<td><p>Ctrl+Shift+V</p></td>
+<td><p>Set Variables</p></td>
+<td><p>Ctrl+Shift+G</p></td>
+<td><p>LAMMPS GUI Howto</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+Shift+S</p></td>
+<td><p>Save File As</p></td>
+<td><p>Ctrl+X</p></td>
+<td><p>Cut text</p></td>
+<td><p>Ctrl+I</p></td>
+<td><p>Create Snapshot Image</p></td>
+<td><p>Ctrl+Shift+M</p></td>
+<td><p>LAMMPS Manual</p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+Q</p></td>
+<td><p>Quit</p></td>
+<td><p>Ctrl+V</p></td>
+<td><p>Paste text</p></td>
+<td><p>Ctrl+P</p></td>
+<td><p>Preferences</p></td>
+<td><p>Ctrl+?</p></td>
+<td><p>Context Help</p></td>
+</tr>
+</tbody>
+</table>
+<p>Further editing keybindings <a class="reference external" href="https://doc.qt.io/qt-5/qplaintextedit.html#editing-key-bindings">are documented with the Qt documentation</a>.  In
+case of conflicts the list above takes precedence.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Howto_github.html" class="btn btn-neutral float-left" title="8.6.2. LAMMPS GitHub tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Howto_pylammps.html" class="btn btn-neutral float-right" title="8.6.4. PyLammps Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2003-2024 Sandia Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>

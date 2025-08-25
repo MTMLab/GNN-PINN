@@ -1,0 +1,125 @@
+# PREREQUISITES:
+#
+#     You must use moltemplate.sh to create 3 files:
+#        system.data  system.in.init  system.in.settings
+#     (Follow the instructions in README_setup.sh, 
+#      or run the file as a script using ./README_setup.sh)
+
+# ------------------------------- Initialization Section --------------------
+
+include         "system.in.init_long"
+
+#boundary p p f
+
+# ------------------------------- Atom Definition Section -------------------
+
+read_data       "system_after_npt.data"
+
+# ------------------------------- Settings Section --------------------------
+
+include         "system.in.settings_long"
+
+# ------------------------------- Run Section -------------------------------
+
+
+#displace_atoms all move 0 20 20 units box
+
+# -- minimization protocol --
+
+#change_box all x final 0 200 y final 0 200 z final 0 200
+
+#fix walls all wall/reflect zlo EDGE zhi EDGE
+
+neigh_modify delay 0 every 1 check yes
+#replicate 1 1 5 
+
+timestep        0.5
+
+thermo          5000
+#thermo_style    custom step temp vol lx ly lz
+thermo_style multi
+dump 2 all xyz  1000 dump_pppm.xyz
+dump 3 all xyz  2000 dump_pppm_2000.xyz
+dump 4 all xyz  5000 dump_pppm_5000.xyz
+dump_modify 2 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+dump_modify 3 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+dump_modify 4 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+
+group O type 49
+group H type 26
+group ar_c type 5
+group ar_h type 24
+
+#minimize 1.0e-4 1.0e-6 100000 400000
+
+#replicate 1 4 4
+
+#fix 1 all recenter 0 0 0
+#unfix 1
+
+#velocity all create 1.0 38092034 rot yes mom yes dist gaussian
+
+#minimize 1.0e-4 1.0e-6 100000 400000
+
+#velocity all create 100.0 38092034 rot yes mom yes dist gaussian
+
+#fix 3333 all nvt temp 1000.0 1000.0 100
+#run 100000
+#unfix 3333
+
+#fix 202 all deform 1 y final 0 25 z final 0 25 units box
+
+#fix 3333 all nvt temp 1.0 1.0 100
+#run 10000
+#unfix 3333
+
+#unfix 202
+
+compute 1 all group/group all molecule inter 
+compute 4 ar_c group/group ar_h molecule inter
+compute 5 H group/group O molecule inter
+
+compute 2 O coord/atom cutoff 2.5 group H 
+
+compute 3 all reduce sum c_2
+
+variable hbond equal c_3/vol
+variable e_inter equal c_1/vol
+variable e_inter2 equal c_4/vol
+variable e_inter3 equal c_5/vol
+variable dens equal density
+
+fix pp1 all ave/time 10 50 5000 v_e_inter file output1.txt
+fix pp2 all ave/time 10 50 5000 v_hbond file output2.txt
+fix pp3 all ave/time 10 50 5000 v_e_inter2 file output3.txt
+fix pp4 all ave/time 10 50 5000 v_e_inter3 file output4.txt
+fix pp5 all ave/time 10 50 5000 v_dens file output5.txt
+
+#dump output local custom 5000 output.txt f_pp1 f_pp2
+
+thermo_style custom step temp etotal epair f_pp1 f_pp2 f_pp3 f_pp4 f_pp5 vol density
+
+
+# fix             fxnpt all npt temp 1.0 1.0 100.0 y 500.0 500.0 1000.0 z 500 500 1000 x 0 0 1000 drag 1.0 couple yz
+ #thermo_modify  flush yes^M
+# run             50000
+# unfix fxnpt
+ #unfix 2000
+# fix 2000 all deform 10 x scale 1.05
+
+ # temperature: 298 K, pressure: 1 barr^M
+# fix             fxnpt all npt temp 298.0 298.0 100.0 y 1.0 1.0 1000.0 z 1 1 1000 drag 1.0
+# run             100000
+# unfix fxnpt
+ 
+# unfix 2000
+ 
+ fix             fxnpt2 all npt temp 298.0 298.0 100.0 aniso 1 1 1000 drag 1.0
+ run             50000
+ unfix fxnpt2
+
+#thermo_style custom step temp epair c_1 c_3 vol
+
+#unfix 2222
+
+write_data   system_after_npt.data

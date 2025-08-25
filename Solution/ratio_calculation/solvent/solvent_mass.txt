@@ -1,0 +1,3 @@
+# Time-averaged data for fix massAvg
+# TimeStep v_mass
+58 187.903

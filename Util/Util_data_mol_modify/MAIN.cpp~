@@ -1,0 +1,277 @@
+/************************************************************
+ * January 03, 2006 
+ * Name: Utility (xmol --> POSCAR)
+ * File name: MAIN.cpp 
+ * Developers: Sangheon Lee and Gyeong S. Hwang
+ * 
+ * 
+ *************************************************************/
+
+#include "nr.h"
+#include <iostream>
+#include <cmath>
+using std::cout;
+using std::cin;
+using std::endl;
+using std::ios;
+using std::cerr; 
+#include <fstream>
+using std::ofstream;
+using std::ifstream;
+#include <iomanip>
+using std::setw;
+
+#include <cstdlib>
+#include <ctime>
+#include <string>
+using std::string;
+
+using namespace std;
+
+const int numC = 3;
+const int numN = 4;
+const DP pi = 3.141592654;
+const int aSi = 0;
+const int aGe = 1;
+const int aO = 2;
+const int aH = 3;
+const int aSn = 4;
+
+//
+// Global variables.
+//
+int namax; // Maximum number of atoms.
+int nemax = 5; // Maximum number of elements.
+int na; // Number of total atoms in the system.
+int nnmax = 4; // Maximum number of neighbors.
+DP cutoff1;
+int penalty;
+int npmax; 
+
+int main()  
+{
+  //  cout << "Enter number of atoms:" << endl; 
+  //  cin >> namax;
+  namax = 3000;
+  na = namax;
+  Mat_IO_INT nn(namax, numN);
+  Mat_IO_DP x(namax, numC);
+  Vec_IO_INT elem(namax), cnt(namax), idb1(namax), idr1(namax), ide1(namax);
+  Vec_IO_DP len(numC), hlen(numC), cen(numC);
+  int i, j, k, l, m, m1;
+  int idum;
+  int logic1;
+  int charge1;
+  int nE1, nE2, nE3, nE4, nE5;
+  DP ratio1;
+
+  string Si("Si");
+  string Ge("Ge");
+  string Sn("Sn");
+  string O("O");
+  string H("H");
+  string string1;
+  string system1;
+
+  elem = -1;
+  
+  //  cout << "Enter an expansion ratio: " << endl;
+  //  cin >> ratio1;
+  
+  // 
+  // Read an initial configuration.
+  //
+  
+  ifstream inputFile3("config.xyz",ios::in);
+  if (!inputFile3) {
+    cerr << "inputFile3 could not be opened" << endl;
+    exit(1);
+  }
+  inputFile3 >> na;
+  inputFile3 >> system1 >> len[0] >> len[1] >> len[2]; 
+  for (i = 0; i < 3; i++) 
+    hlen[i] = len[i]*0.5;
+
+  nE1 = 0;
+  for (i = 0; i < na; i++) {
+    inputFile3 >> string1 >> x[i][0] >> x[i][1] >> x[i][2];
+
+    //    cout << string1 << endl;
+
+    logic1 = string1.compare(Si);
+
+    // 
+    // Identify elements.
+    //
+    if (logic1 == 0) {
+      elem[i] = aSi; 
+      //      nE1++;
+    }
+    else {
+      logic1 = string1.compare(Ge);
+      if (logic1 == 0) 
+	elem[i] = aGe;
+      else {
+	logic1 = string1.compare(O);
+	if (logic1 == 0) 
+	  elem[i] = aO;
+	else {
+	  logic1 = string1.compare(H);
+	  if (logic1 == 0) 
+	    elem[i] = aH;
+	  else {
+	    logic1 = string1.compare(Sn);
+	    if (logic1 == 0) 
+	      elem[i] = aSn;
+	  }
+	}
+      }
+    }
+  }
+  
+  j = k = l = m = m1 = 0;
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aSi) 
+      j++;
+    else if (elem[i] == aGe) 
+      k++;
+    else if (elem[i] == aO)
+      l++;
+    else if (elem[i] == aH) 
+      m++;
+    else if (elem[i] == aSn) 
+      m1++;
+  }
+  nE1 = j;
+  nE2 = k;
+  nE3 = l;
+  nE4 = m;
+  nE5 = m1;
+
+  ofstream outputFile5("POSCAR", ios::out);
+  if (!outputFile5) {
+    cerr << "POSCAR could not be opened" << endl;
+    exit(1);
+  }
+  
+  //  if (nE1 > 0) {
+  //    outputFile5 << left << setw(4) << Si;
+  //  }
+  //  if (nE2 > 0) {
+  //    outputFile5 << left << setw(4) << C;
+  //  }
+  //  if (nE3 > 0) {
+  //    outputFile5 << left << setw(4) << O;
+  //  }
+  //  if (nE4 > 0) {
+  //  outputFile5 << left << setw(4) << H;
+  //  }
+  //  outputFile5 << endl;
+
+  outputFile5 << "Si Ge" << endl;
+  outputFile5 << fixed << setprecision(17);
+  outputFile5 << setw(20) << 1.0 << endl;
+  outputFile5 << fixed << setprecision(16);
+  outputFile5 << setw(23) << len[0] << setw(22) << .0 << setw(22) << .0 << endl;
+  outputFile5 << setw(23) << .0 << setw(22) << len[1] << setw(22) << .0 << endl;
+  outputFile5 << setw(23) << .0 << setw(22) << .0 << setw(22) << len[2] << endl;
+  if (nE1 > 0) {
+    outputFile5 << setw(4) << nE1;
+  }
+  if (nE2 > 0) {
+    outputFile5 << setw(4) << nE2;
+  }
+  if (nE3 > 0) {
+    outputFile5 << setw(4) << nE3;
+  }
+  if (nE4 > 0) {
+    outputFile5 << setw(4) << nE4;
+  }
+  if (nE5 > 0) {
+    outputFile5 << setw(4) << nE5;
+  }
+  outputFile5 << endl;
+
+  //  outputFile5 << setw(4) << nE1 << setw(6) << nE2 << setw(6) << nE3 << setw(6) << nE4 << endl;
+  //  outputFile5 << setw(4) << nE2 << endl;
+  outputFile5 << "Selective dynamics" << endl;
+  outputFile5 << "Cartesian" << endl;
+  outputFile5 << setprecision(16);
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aSi) {
+      if (i == 0 || i == 3 || i == 4) {
+	outputFile5 << setw(20) << x[i][0] 
+		    << setw(20) << x[i][1]
+		    << setw(20) << x[i][2]
+		    << setw(4) << "T" 
+		    << setw(4) << "T"
+		    << setw(4) << "T" << endl;
+      }
+      else {
+	outputFile5 << setw(20) << x[i][0] 
+		    << setw(20) << x[i][1]
+		    << setw(20) << x[i][2]
+		    << setw(4) << "T" 
+		    << setw(4) << "T"
+		    << setw(4) << "T" << endl;
+      }
+    }
+  }
+
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aGe) {
+      outputFile5 << setw(20) << x[i][0] 
+		  << setw(20) << x[i][1] 
+		  << setw(20) << x[i][2] 
+		  << setw(4) << "T" 
+		  << setw(4) << "T"
+		  << setw(4) << "T" << endl;
+    }
+  } 
+
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aO) {
+      if (i == 0 || i == 3 || i == 4) {
+	outputFile5 << setw(20) << x[i][0] 
+		    << setw(20) << x[i][1]
+		    << setw(20) << x[i][2]
+		    << setw(4) << "T" 
+		    << setw(4) << "T"
+		    << setw(4) << "T" << endl;
+      }
+      else {
+	outputFile5 << setw(20) << x[i][0] 
+		    << setw(20) << x[i][1]
+		    << setw(20) << x[i][2]
+		    << setw(4) << "T" 
+		    << setw(4) << "T"
+		    << setw(4) << "T" << endl;
+      }
+    }
+  }
+
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aH) {
+      outputFile5 << setw(20) << x[i][0] 
+		  << setw(20) << x[i][1] 
+		  << setw(20) << x[i][2] 
+		  << setw(4) << "T" 
+		  << setw(4) << "T"
+		  << setw(4) << "T" << endl;
+    }
+  }
+
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aSn) {
+      outputFile5 << setw(20) << x[i][0] 
+		  << setw(20) << x[i][1] 
+		  << setw(20) << x[i][2] 
+		  << setw(4) << "T" 
+		  << setw(4) << "T"
+		  << setw(4) << "T" << endl;
+    }
+  }
+  return 0;
+}
+
+

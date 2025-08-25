@@ -1,0 +1,194 @@
+#include "nr.h"
+#include <cmath>
+#include <iostream>
+using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
+
+#include <iomanip>
+#include <cstdlib>
+
+extern int aC;
+extern int aSi;
+extern int aO;
+extern int aH;
+extern int aN;
+
+extern int na, namax;
+extern int numC;
+extern int numN;
+
+void NR::neighbor_list(Mat_IO_DP &x, Mat_IO_DP &len, Mat_IO_DP &hlen, Vec_IO_INT &elem, Mat_IO_INT &nn)
+{   
+  int i, j, k, k1;
+  const int m = 3;
+  const int num1 = 5;
+  const int num2 = 2;
+  const int num3 = 1;
+  Vec_IO_INT elemnum(num1);
+  Vec_IO_INT count(namax), count_hold(namax);
+  Mat_IO_INT nn_hold(namax, num1);
+  Vec_IO_DP v_d_ij(numC);
+  
+  elemnum[0] = 4;
+  elemnum[1] = 4;
+  elemnum[2] = 4;
+  elemnum[3] = 1;
+  elemnum[4] = 3;
+
+  count = 0;
+  count_hold = 0;
+
+  nn = -1;
+
+  DP d_ss;
+  DP dij;
+  int si1, si2, o1, o2;
+  int flag;
+  
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aH) {
+      cout << "H i = " << i << endl;
+      nn_hold = nn;
+      count_hold = count;
+      d_ss = 0.0;
+      while (count[i] < elemnum[elem[i]]) {
+	count = count_hold;
+	nn = nn_hold;
+	for (j = 0; j < na; j++) {
+	  if (j != i && elem[j] != aH) {
+	    flag = 0;
+	    if (count[j] < elemnum[elem[j]] && count[i] < elemnum[elem[i]]) {
+	      dist_ij(x, len, hlen, i, j, dij, v_d_ij);
+	      if (dij < d_ss) {
+		for (k = 0; k < count[j]; k++) {
+		  if (nn[j][k] == i) 
+		    flag = 1;
+		}
+		if (flag == 0) {
+		  nn[i][count[i]] = j;
+		  nn[j][count[j]] = i;
+		  count[i]++;
+		  count[j]++;
+		}
+	      }      
+	    }
+	  }
+	}
+	d_ss += 0.1;
+      }
+    }
+  }
+
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aO) {     
+      cout << "O i = " << i << endl;
+      nn_hold = nn;
+      count_hold = count;
+      d_ss = 1.1;
+      while (count[i] < elemnum[elem[i]] && d_ss < 2.0) {
+	count = count_hold;
+	nn = nn_hold;
+	for (j = 0; j < na; j++) {
+	  if (j != i && elem[j] != elem[i]) {
+	    flag = 0;
+	    if (count[j] < elemnum[elem[j]] && count[i] < elemnum[elem[i]]) {
+	      dist_ij(x, len, hlen, i, j, dij, v_d_ij);
+	      if (dij < d_ss) {
+		for (k = 0; k < count[j]; k++) {
+		  if (nn[j][k] == i) 
+		    flag = 1;
+		}
+		if (flag == 0) {
+		  nn[i][count[i]] = j;
+		  nn[j][count[j]] = i;
+		  count[i]++;
+		  count[j]++;
+		}
+	      }
+	    }      
+	  }
+	}
+	d_ss += 0.1;
+      }
+    }
+  }
+
+  for (i = 0; i < na; i++) {
+    if (elem[i] == aN) {     
+      cout << "N i = " << i << endl;
+      nn_hold = nn;
+      count_hold = count;
+      d_ss = 1.1;
+      while (count[i] < elemnum[elem[i]] && d_ss < 2.0) {
+	count = count_hold;
+	nn = nn_hold;
+	for (j = 0; j < na; j++) {
+	  if (j != i && elem[j] != elem[i]) {
+	    flag = 0;
+	    if (count[j] < elemnum[elem[j]] && count[i] < elemnum[elem[i]]) {
+	      dist_ij(x, len, hlen, i, j, dij, v_d_ij);
+	      if (dij < d_ss) {
+		for (k = 0; k < count[j]; k++) {
+		  if (nn[j][k] == i) 
+		    flag = 1;
+		}
+		if (flag == 0) {
+		  nn[i][count[i]] = j;
+		  nn[j][count[j]] = i;
+		  count[i]++;
+		  count[j]++;
+		}
+	      }
+	    }      
+	  }
+	}
+	d_ss += 0.1;
+      }
+    }
+  }
+
+
+  for (i = 0; i < na; i++) {
+    cout << "C or Si = " << i << endl;
+    nn_hold = nn;
+    count_hold = count;
+    d_ss = 1.0;
+    while (count[i] < elemnum[elem[i]] && d_ss < 2.0) {
+      count = count_hold;
+      nn = nn_hold;
+      for (j = 0; j < na; j++) {
+	if (j != i) {
+	  flag = 0;
+	  dist_ij(x, len, hlen, i, j, dij, v_d_ij);
+	  if (count[j] < elemnum[elem[j]] && count[i] < elemnum[elem[i]]) {
+	    if (dij < d_ss) {
+	      for (k = 0; k < count[j]; k++) {
+		if (nn[j][k] == i) {
+		  flag = 1;
+		} 
+		
+		else {
+		  for (k1 = 0; k1 < count[nn[j][k]]; k1++) {
+		    if (nn[nn[j][k]][k1] == i) {
+		      flag = 1;
+		    }
+		  }
+		}
+	      }
+	      if (flag == 0) {
+		nn[i][count[i]] = j;
+		count[i]++;
+		nn[j][count[j]] = i;		      
+		count[j]++;		    
+	      }
+	    } 
+	  }
+	}		
+      }
+      d_ss += 0.1;
+    }    
+  } 
+
+} 

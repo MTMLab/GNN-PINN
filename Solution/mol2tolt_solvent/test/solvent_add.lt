@@ -1,0 +1,14 @@
+write_once("In Settings") {
+    improper_coeff @improper:c-c3-n-c3 cvff 0.3667 -1 2
+    improper_coeff @improper:c3-n-c-o cvff 0.3667 -1 2
+}
+write_once("Data Bonds By Type") {
+}
+write_once("Data Angles By Type") {
+}
+write_once("Data Dihedrals By Type") {
+}
+write_once("Data Impropers By Type") {
+    @improper:c-c3-n-c3 @atom:n @atom:c3 @atom:c @atom:c3
+    @improper:c3-n-c-o @atom:c @atom:n @atom:c3 @atom:o
+}

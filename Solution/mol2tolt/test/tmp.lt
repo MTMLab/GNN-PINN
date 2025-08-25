@@ -1,0 +1,72 @@
+import "gaff.lt"
+cation inherits GAFF{
+#include 'tmp_add.lt'
+write("Data Atoms"){
+    $atom:atom1 $mol @atom:nh -0.766 -4.541 16.8776 -6.6717
+    $atom:atom2 $mol @atom:c 0.2866 2.0154 -6.0171 1.8055
+    $atom:atom3 $mol @atom:o -0.5028 0.8069 0.2454 1.5936
+    $atom:atom4 $mol @atom:c 0.5151 0.9243 -0.4654 0.6007
+    $atom:atom5 $mol @atom:n -0.6874 0.7496 -0.0826 -0.7252
+    $atom:atom6 $mol @atom:ca 0.2983 0.4439 1.2378 -1.1295
+    $atom:atom7 $mol @atom:ca -0.1142 0.6465 2.3186 -0.2829
+    $atom:atom8 $mol @atom:ca -0.1029 0.2348 3.5988 -0.6349
+    $atom:atom9 $mol @atom:ca 0.3029 -0.3954 3.8512 -1.8484
+    $atom:atom10 $mol @atom:ca -0.1262 -0.5196 2.7874 -2.7525
+    $atom:atom11 $mol @atom:ca -0.1408 -0.0919 1.4868 -2.3984
+    $atom:atom12 $mol @atom:n -0.624 -0.9311 5.1277 -2.1671
+    $atom:atom13 $mol @atom:c 0.5412 -0.9907 6.2088 -1.2813
+    $atom:atom14 $mol @atom:o -0.4563 -0.5768 6.2059 -0.1235
+    $atom:atom15 $mol @atom:c3 0.2631 -1.6258 7.4796 -1.8279
+    $atom:atom16 $mol @atom:c3 0.3332 -0.5859 8.6 -1.8359
+    $atom:atom17 $mol @atom:c3 0.3162 0.5905 8.3711 -2.7772
+    $atom:atom18 $mol @atom:c3 0.3309 0.2598 8.277 -4.2608
+    $atom:atom19 $mol @atom:c3 0.3255 -0.4902 9.4441 -4.8899
+    $atom:atom20 $mol @atom:c3 0.2646 0.258 10.7616 -4.7865
+    $atom:atom21 $mol @atom:c 0.5482 -0.4863 11.8213 -5.5907
+    $atom:atom22 $mol @atom:o -0.4588 -0.399 11.844 -6.818
+    $atom:atom23 $mol @atom:n -0.6329 -1.2256 12.7131 -4.8159
+    $atom:atom24 $mol @atom:ca 0.3012 -2.0539 13.7481 -5.3068
+    $atom:atom25 $mol @atom:ca -0.1049 -2.4118 13.855 -6.6501
+    $atom:atom26 $mol @atom:ca -0.1392 -3.2112 14.9087 -7.0993
+    $atom:atom27 $mol @atom:ca 0.2993 -3.6452 15.9003 -6.2249
+    $atom:atom28 $mol @atom:ca -0.1371 -3.3595 15.7537 -4.8664
+    $atom:atom29 $mol @atom:ca -0.1282 -2.5575 14.6957 -4.4083
+    $atom:atom30 $mol @atom:f -0.255 0.3641 11.1486 -3.4816
+    $atom:atom31 $mol @atom:f -0.2412 1.5394 10.6115 -5.2273
+    $atom:atom32 $mol @atom:f -0.2466 -0.726 9.1273 -6.1981
+    $atom:atom33 $mol @atom:f -0.2505 -1.7286 9.5548 -4.3337
+    $atom:atom34 $mol @atom:f -0.2392 1.4231 8.0705 -4.9519
+    $atom:atom35 $mol @atom:f -0.2553 -0.4507 7.122 -4.4653
+    $atom:atom36 $mol @atom:f -0.2335 1.5127 9.3616 -2.5972
+    $atom:atom37 $mol @atom:f -0.255 1.2435 7.2271 -2.4113
+    $atom:atom38 $mol @atom:f -0.2418 -1.1876 9.7845 -2.1572
+    $atom:atom39 $mol @atom:f -0.24 -0.1036 8.8083 -0.5739
+    $atom:atom40 $mol @atom:f -0.2555 -2.1725 7.3055 -3.0633
+    $atom:atom41 $mol @atom:f -0.245 -2.6784 7.8602 -1.038
+    $atom:atom42 $mol @atom:ca -0.0331 1.2041 -1.8978 0.8513
+    $atom:atom43 $mol @atom:ca -0.056 0.6852 -2.4604 2.0268
+    $atom:atom44 $mol @atom:ca -0.0982 0.9363 -3.7944 2.3478
+    $atom:atom45 $mol @atom:ca 0.0157 1.7238 -4.5793 1.4991
+    $atom:atom46 $mol @atom:o -0.4547 2.69 -6.6352 0.983
+    $atom:atom47 $mol @atom:ca -0.0646 2.2593 -4.0032 0.3306
+    $atom:atom48 $mol @atom:ca -0.0848 2.0063 -2.6651 0.0072
+    $atom:atom49 $mol @atom:hn 0.319219 0.6582 -0.8092 -1.4223
+    $atom:atom50 $mol @atom:ha 0.237619 1.1209 2.215 0.688
+    $atom:atom51 $mol @atom:ha 0.249719 0.4288 4.3638 0.1062
+    $atom:atom52 $mol @atom:ha 0.209419 -0.9684 2.9353 -3.7327
+    $atom:atom53 $mol @atom:ha 0.199119 -0.2307 0.6774 -3.109
+    $atom:atom54 $mol @atom:hn 0.361519 -1.381 5.2229 -3.0745
+    $atom:atom55 $mol @atom:hn 0.359419 -1.0798 12.6915 -3.8061
+    $atom:atom56 $mol @atom:ha 0.241319 -2.1085 13.1209 -7.3885
+    $atom:atom57 $mol @atom:ha 0.206119 -3.4842 14.9409 -8.1512
+    $atom:atom58 $mol @atom:ha 0.203219 -3.7572 16.4681 -4.1494
+    $atom:atom59 $mol @atom:ha 0.209619 -2.3404 14.6363 -3.3449
+    $atom:atom60 $mol @atom:hn 0.340619 -4.4516 17.0802 -7.6635
+    $atom:atom61 $mol @atom:ha 0.204719 0.0867 -1.8507 2.7039
+    $atom:atom62 $mol @atom:ha 0.190119 0.5127 -4.1844 3.2695
+    $atom:atom63 $mol @atom:ha 0.210319 2.8943 -4.5939 -0.3293
+    $atom:atom64 $mol @atom:ha 0.187619 2.471 -2.232 -0.8747
+}
+write('Data Bond List') {
+}
+}

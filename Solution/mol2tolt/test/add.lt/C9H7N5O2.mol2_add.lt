@@ -1,0 +1,37 @@
+write_once("In Settings") {
+    dihedral_coeff @dihedral:ca-ca-cg-n1 fourier 1 0.0 2 180.0    # 
+    dihedral_coeff @dihedral:na-ca-cg-n1 fourier 1 0.0 2 180.0    # 
+    improper_coeff @improper:ca-cg-ca-na cvff 0.3667 -1 2
+    improper_coeff @improper:ca-n-ca-na cvff 0.3667 -1 2
+    improper_coeff @improper:c-ca-n-hn cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-na-o cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-na cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-ha cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-nh cvff 0.3667 -1 2
+    improper_coeff @improper:ca-hn-nh-hn cvff 0.3667 -1 2
+    improper_coeff @improper:ca-n-c-o cvff 0.3667 -1 2
+    improper_coeff @improper:c-ca-ca-ca cvff 0.3667 -1 2
+    improper_coeff @improper:ca-h4-c-o cvff 0.3667 -1 2
+}
+write_once("Data Bonds By Type") {
+}
+write_once("Data Angles By Type") {
+    @angle:cg-ca-na @atom:cg @atom:ca @atom:na
+}
+write_once("Data Dihedrals By Type") {
+    @dihedral:ca-ca-cg-n1 @atom:ca @atom:ca @atom:cg @atom:n1
+    @dihedral:na-ca-cg-n1 @atom:na @atom:ca @atom:cg @atom:n1
+}
+write_once("Data Impropers By Type") {
+    @improper:ca-cg-ca-na @atom:ca @atom:cg @atom:ca @atom:na
+    @improper:ca-n-ca-na @atom:ca @atom:n @atom:ca @atom:na
+    @improper:c-ca-n-hn @atom:n @atom:ca @atom:c @atom:hn
+    @improper:ca-ca-na-o @atom:na @atom:ca @atom:ca @atom:o
+    @improper:ca-ca-ca-na @atom:ca @atom:ca @atom:ca @atom:na
+    @improper:ca-ca-ca-ha @atom:ca @atom:ca @atom:ca @atom:ha
+    @improper:ca-ca-ca-nh @atom:ca @atom:ca @atom:ca @atom:nh
+    @improper:ca-hn-nh-hn @atom:nh @atom:hn @atom:ca @atom:hn
+    @improper:ca-n-c-o @atom:c @atom:n @atom:ca @atom:o
+    @improper:c-ca-ca-ca @atom:ca @atom:ca @atom:c @atom:ca
+    @improper:ca-h4-c-o @atom:c @atom:h4 @atom:ca @atom:o
+}

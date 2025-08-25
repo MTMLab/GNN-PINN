@@ -1,0 +1,10 @@
+import solvent.lt
+write_once("Data Boundary") {
+0.0    285 xlo xhi
+0.0    200 ylo yhi
+0.0    200 zlo zhi
+}
+solvents = new solvent[19].move(10, 0, 0)
+              [5].move(0, 40.0, 0)
+              [2].move(0, 0, 100.0)
+solvents[*][*][*].move(4.0, 4.0, 4.0)

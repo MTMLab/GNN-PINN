@@ -1,0 +1,11 @@
+system.data를 polymer와 solvent가 각각의 파일로 만들어짐
+run파일에서 system.data와 system_solvent.data가 합쳐짐 - add command 사용
+
+
+group이 지정 되어 있음
+1번째 그룹이 polymer, 2번째 그룹이 solvent
+
+replicate를 하게 되면 이후 숫자 이어짐
+ex) replicate 2 2 2
+     polymer : 1 3 5 7 ... 15
+     solvent : 2 4 6 8 ... 16

@@ -1,0 +1,9 @@
+import "gaff.lt"
+H_head inherits GAFF{
+#include 'monomer_add.lt'
+write("Data Atoms"){
+    $atom:H_head $mol @atom:hn 0 0 0 0
+}
+write('Data Bond List') {
+}
+}

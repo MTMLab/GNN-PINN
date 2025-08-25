@@ -1,0 +1,7 @@
+import polymer.lt
+polymers = new aramid
+write_once("Data Boundary") {
+0.0    138.615  xlo xhi
+0.0    200  ylo yhi
+0.0    40  zlo zhi
+}

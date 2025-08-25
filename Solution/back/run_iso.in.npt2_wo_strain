@@ -1,0 +1,140 @@
+# PREREQUISITES:
+#
+#     You must use moltemplate.sh to create 3 files:
+#        system.data  system.in.init  system.in.settings
+#     (Follow the instructions in README_setup.sh, 
+#      or run the file as a script using ./README_setup.sh)
+
+# ------------------------------- Initialization Section --------------------
+
+include         "system.in.init"
+
+#boundary p p f
+
+# ------------------------------- Atom Definition Section -------------------
+
+read_data       "system_group.data" extra/bond/per/atom 5000 extra/angle/per/atom 5000 extra/dihedral/per/atom 5000 extra/improper/per/atom 5000
+#read_data system_solvent_group.data add append shift 5 5 5
+read_data system_solvent.data add append shift 5 5 5
+
+# ------------------------------- Settings Section --------------------------
+
+include         "system.in.settings"
+
+# ------------------------------- Run Section -------------------------------
+
+
+
+displace_atoms all move 0 20 20 units box
+
+# -- minimization protocol --
+
+#change_box all x final 0 200 y final 0 200 z final 0 200
+
+#fix walls all wall/reflect zlo EDGE zhi EDGE
+
+neigh_modify delay 0 every 1 check yes
+#replicate 2 2 2 
+
+timestep        0.5
+
+thermo          5000
+#thermo_style    custom step temp vol lx ly lz
+thermo_style multi
+dump 2 all xyz  1000 dump.xyz
+dump 3 all xyz  20000 dump_20000.xyz
+dump 4 all xyz  50000 dump_50000.xyz
+dump_modify 2 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+dump_modify 3 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+dump_modify 4 element C C C C C C C C C C C C C C C C C C H H H H H H H H H H H H H F Cl Br I N N N N N N N N N N N N N O O O O P P P P P P P P P P P S S S S S S S S
+
+group chain molecule 1
+#group solvent molecule 2
+group solvent subtract all chain
+
+#group chain molecule 1 3 5 7 9 11 13 15 
+#group solvent molecule 2 4 6 8 10 12 14 16
+
+#minimize 1.0e-4 1.0e-6 100000 400000
+
+#replicate 1 4 4
+
+#fix 1 all recenter 0 0 0
+#unfix 1
+
+#velocity all create 1.0 38092034 rot yes mom yes dist gaussian
+
+minimize 1.0e-4 1.0e-6 100000 400000
+
+velocity all create 1.0 38092034 rot yes mom yes dist gaussian
+
+#fix 3333 all nvt temp 1000.0 1000.0 100
+#run 100000
+#unfix 3333
+
+#fix 202 all deform 1 y final 0 25 z final 0 25 units box
+
+fix 3333 all nvt temp 1.0 1.0 100
+run 10000
+unfix 3333
+
+#unfix 202
+
+compute 1 chain group/group solvent molecule inter 
+compute 2 chain group/group chain molecule inter
+compute 3 solvent group/group solvent molecule inter
+
+
+variable e_inter_chain_solvent equal c_1/vol
+variable e_inter_chain_chain equal c_2
+variable e_inter_solvent_solvent equal c_3/vol
+variable dens equal density
+
+fix pp1 all ave/time 10 50 1000 v_e_inter_chain_solvent file output1.txt
+fix pp2 all ave/time 10 50 1000 v_e_inter_chain_chain file output2.txt
+fix pp3 all ave/time 10 50 5000 v_e_inter_solvent_solvent file output3.txt
+fix pp4 all ave/time 10 50 1000 v_dens file output4.txt
+fix pp5 all ave/time 10 50 1000 v_dens file output5.txt
+
+
+#dump output local custom 5000 output.txt f_pp1 f_pp2
+
+thermo_style custom step temp etotal ke pe epair f_pp1 f_pp2 f_pp3 f_pp4 f_pp5 vol density
+
+fix def all deform 10 x final 0 100 y final 0 100 z final 0 100 units box
+fix 3333 all nvt temp 1000.0 1000.0 100
+run 10000
+unfix 3333
+unfix def
+
+
+
+ #fix             fxnpt all npt temp 1.0 1.0 100.0 y 500.0 500.0 1000.0 z 500 500 1000 x 500 500 1000 drag 1.0 couple xyz
+ fix             fxnpt all npt temp 1000.0 1000.0 100.0 iso 1000.0 1000.0 1000 drag 1.0
+ #thermo_modify  flush yes^M
+ run             50000
+ unfix fxnpt
+ #unfix 2000
+# fix 2000 all deform 10 x scale 1.05
+
+ # temperature: 298 K, pressure: 1 barr^M
+ fix             fxnpt all npt temp 1000.0 298.0 100.0 aniso 1000 1000 1000 drag 1.0
+ run             100000
+ unfix fxnpt
+
+ # temperature: 298 K, pressure: 1 barr^M
+ fix             fxnpt all npt temp 298.0 298.0 100.0 aniso 1000 1 1000 drag 1.0
+ run             100000
+ unfix fxnpt
+ 
+# unfix 2000
+ 
+ fix             fxnpt2 all npt temp 298.0 298.0 100.0 aniso 1 1 1000 drag 1.0
+ run             2000
+ unfix fxnpt2
+
+#thermo_style custom step temp epair c_1 c_3 vol
+
+#unfix 2222
+
+write_data   system_after_npt.data

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fitpod command &mdash; LAMMPS documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/lammps.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/lammps.ico"/>
+    <link rel="canonical" href="https://docs.lammps.org/fitpod_command.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=87a62f44"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script async="async" src="_static/mathjax/es5/tex-mml-chtml.js?v=cadf963e"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="group command" href="group.html" />
+    <link rel="prev" title="fix_modify command" href="fix_modify.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="Manual.html">
+            
+              <img src="_static/lammps-logo.png" class="logo" alt="Logo"/>
+          </a>
+            <div class="lammps_version">Version: <b>2 Aug 2023</b></div>
+            <div class="lammps_release">git info: stable 2Aug2023 update4</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Install.html">2. Install LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Build.html">3. Build LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Run_head.html">4. Run LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Commands.html">5. Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Packages.html">6. Optional packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speed.html">7. Accelerate performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Howto.html">8. Howto discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">9. Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tools.html">10. Auxiliary tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Errors.html">11. Errors</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Programmer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Library.html">1. LAMMPS Library Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python_head.html">2. Use Python with LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modify.html">3. Modifying &amp; extending LAMMPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Developer.html">4. Information for Developers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Command Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="commands_list.html">Commands</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="angle_coeff.html">angle_coeff command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angle_style.html">angle_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angle_write.html">angle_write command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_modify.html">atom_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_style.html">atom_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balance.html">balance command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bond_coeff.html">bond_coeff command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bond_style.html">bond_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bond_write.html">bond_write command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boundary.html">boundary command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="change_box.html">change_box command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clear.html">clear command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comm_modify.html">comm_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comm_style.html">comm_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute.html">compute command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute_modify.html">compute_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create_atoms.html">create_atoms command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create_bonds.html">create_bonds command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create_box.html">create_box command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete_atoms.html">delete_atoms command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete_bonds.html">delete_bonds command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dielectric.html">dielectric command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dihedral_coeff.html">dihedral_coeff command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dihedral_style.html">dihedral_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dihedral_write.html">dihedral_write command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension.html">dimension command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="displace_atoms.html">displace_atoms command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamical_matrix.html">dynamical_matrix command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="echo.html">echo command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fix.html">fix command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fix_modify.html">fix_modify command</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fitpod command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#syntax">Syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameterized-potential-energy-surface">Parameterized Potential Energy Surface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#proper-orthogonal-descriptors">Proper Orthogonal Descriptors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#four-body-snap-descriptors">Four-Body SNAP Descriptors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linear-proper-orthogonal-descriptor-potentials">Linear Proper Orthogonal Descriptor Potentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quadratic-proper-orthogonal-descriptor-potentials">Quadratic Proper Orthogonal Descriptor Potentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restrictions">Restrictions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#related-commands">Related commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default">Default</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">group command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group2ndx.html">group2ndx command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group2ndx.html#ndx2group-command">ndx2group command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyper.html">hyper command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="if.html">if command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="improper_coeff.html">improper_coeff command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="improper_style.html">improper_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="include.html">include command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="info.html">info command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jump.html">jump command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kim_commands.html">kim command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kspace_modify.html">kspace_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kspace_style.html">kspace_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="label.html">label command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labelmap.html">labelmap command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lattice.html">lattice command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">log command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mass.html">mass command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mdi.html">mdi command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_modify.html">min_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_spin.html">min_style spin command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_spin.html#min-style-spin-cg-command">min_style spin/cg command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_spin.html#min-style-spin-lbfgs-command">min_style spin/lbfgs command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html">min_style cg command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-hftn-command">min_style hftn command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-sd-command">min_style sd command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-quickmin-command">min_style quickmin command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-fire-command">min_style fire command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-spin-command"><span class="xref std std-doc">min_style spin</span> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-spin-cg-command"><span class="xref std std-doc">min_style spin/cg</span> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_style.html#min-style-spin-lbfgs-command"><span class="xref std std-doc">min_style spin/lbfgs</span> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimize.html">minimize command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html">molecule command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neb.html">neb command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neb_spin.html">neb/spin command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neigh_modify.html">neigh_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neighbor.html">neighbor command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="newton.html">newton command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="next.html">next command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="package.html">package command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pair_coeff.html">pair_coeff command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pair_modify.html">pair_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pair_style.html">pair_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pair_write.html">pair_write command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partition.html">partition command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin.html">plugin command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prd.html">prd command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="print.html">print command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processors.html">processors command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python.html">python command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quit.html">quit command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="read_data.html">read_data command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="read_dump.html">read_dump command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="read_restart.html">read_restart command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="region.html">region command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="replicate.html">replicate command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rerun.html">rerun command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reset_atoms.html">reset_atoms command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reset_timestep.html">reset_timestep command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restart.html">restart command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_style.html">run_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set.html">set command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shell.html">shell command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="special_bonds.html">special_bonds command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="suffix.html">suffix command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tad.html">tad command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="temper.html">temper command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="temper_grem.html">temper/grem command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="temper_npt.html">temper/npt command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermo.html">thermo command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermo_modify.html">thermo_modify command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermo_style.html">thermo_style command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="third_order.html">third_order command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timer.html">timer command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">timestep command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uncompute.html">uncompute command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="undump.html">undump command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unfix.html">unfix command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units.html">units command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html">variable command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="velocity.html">velocity command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_coeff.html">write_coeff command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_data.html">write_data command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_dump.html">write_dump command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_restart.html">write_restart command</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fixes.html">Fixes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="computes.html">Computes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pairs.html">Pair Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bonds.html">Bond Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="angles.html">Angle Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dihedrals.html">Dihedral Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impropers.html">Improper Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dumps.html">Dump Styles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fix_modify_atc_commands.html">fix_modify AtC commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Bibliography.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="Manual.html">LAMMPS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="Manual.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="commands_list.html">Commands</a></li>
+      <li class="breadcrumb-item active">fitpod command</li>
+      <li class="wy-breadcrumbs-aside">
+          <a href="https://www.lammps.org"><img src="_static/lammps-logo.png" width="64" height="16" alt="LAMMPS Homepage"></a> | <a href="Commands_all.html">Commands</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="fix_modify.html" class="btn btn-neutral float-left" title="fix_modify command" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="group.html" class="btn btn-neutral float-right" title="group command" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><span class="math notranslate nohighlight">\(\renewcommand{\AA}{\text{Å}}\)</span></p>
+<section id="fitpod-command">
+<span id="index-0"></span><h1>fitpod command<a class="headerlink" href="#fitpod-command" title="Permalink to this heading"></a></h1>
+<section id="syntax">
+<h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this heading"></a></h2>
+<div class="highlight-LAMMPS notranslate"><div class="highlight"><pre><span></span><span class="k">fitpod</span><span class="w"> </span><span class="n">Ta_param.pod</span><span class="w"> </span><span class="n">Ta_data.pod</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>fitpod = style name of this command</p></li>
+<li><p>Ta_param.pod = an input file that describes proper orthogonal descriptors (PODs)</p></li>
+<li><p>Ta_data.pod = an input file that specifies DFT data used to fit a POD potential</p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<div class="highlight-LAMMPS notranslate"><div class="highlight"><pre><span></span><span class="k">fitpod</span><span class="w"> </span><span class="n">Ta_param.pod</span><span class="w"> </span><span class="n">Ta_data.pod</span>
+</pre></div>
+</div>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 22Dec2022.</span></p>
+</div>
+<p>Fit a machine-learning interatomic potential (ML-IAP) based on proper
+orthogonal descriptors (POD).  Two input files are required for this
+command. The first input file describes a POD potential parameter
+settings, while the second input file specifies the DFT data used for
+the fitting procedure.</p>
+<p>The table below has one-line descriptions of all the keywords that can
+be used in the first input file (i.e. <code class="docutils literal notranslate"><span class="pre">Ta_param.pod</span></code> in the example
+above):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>species</p></td>
+<td><p>(none)</p></td>
+<td><p>STRING</p></td>
+<td><p>Chemical symbols for all elements in the system and have to match XYZ training files.</p></td>
+</tr>
+<tr class="row-odd"><td><p>pbc</p></td>
+<td><p>1 1 1</p></td>
+<td><p>INT</p></td>
+<td><p>three integer constants specify boundary conditions</p></td>
+</tr>
+<tr class="row-even"><td><p>rin</p></td>
+<td><p>1.0</p></td>
+<td><p>REAL</p></td>
+<td><p>a real number specifies the inner cut-off radius</p></td>
+</tr>
+<tr class="row-odd"><td><p>rcut</p></td>
+<td><p>5.0</p></td>
+<td><p>REAL</p></td>
+<td><p>a real number specifies the outer cut-off radius</p></td>
+</tr>
+<tr class="row-even"><td><p>bessel_polynomial_degree</p></td>
+<td><p>3</p></td>
+<td><p>INT</p></td>
+<td><p>the maximum degree of Bessel polynomials</p></td>
+</tr>
+<tr class="row-odd"><td><p>inverse_polynomial_degree</p></td>
+<td><p>6</p></td>
+<td><p>INT</p></td>
+<td><p>the maximum degree of inverse radial basis functions</p></td>
+</tr>
+<tr class="row-even"><td><p>onebody</p></td>
+<td><p>1</p></td>
+<td><p>BOOL</p></td>
+<td><p>turns on/off one-body potential</p></td>
+</tr>
+<tr class="row-odd"><td><p>twobody_number_radial_basis_functions</p></td>
+<td><p>6</p></td>
+<td><p>INT</p></td>
+<td><p>number of radial basis functions for two-body potential</p></td>
+</tr>
+<tr class="row-even"><td><p>threebody_number_radial_basis_functions</p></td>
+<td><p>5</p></td>
+<td><p>INT</p></td>
+<td><p>number of radial basis functions for three-body potential</p></td>
+</tr>
+<tr class="row-odd"><td><p>threebody_number_angular_basis_functions</p></td>
+<td><p>5</p></td>
+<td><p>INT</p></td>
+<td><p>number of angular basis functions for three-body potential</p></td>
+</tr>
+<tr class="row-even"><td><p>fourbody_snap_twojmax</p></td>
+<td><p>0</p></td>
+<td><p>INT</p></td>
+<td><p>band limit for SNAP bispectrum components (0,2,4,6,8… allowed)</p></td>
+</tr>
+<tr class="row-odd"><td><p>fourbody_snap_chemflag</p></td>
+<td><p>0</p></td>
+<td><p>BOOL</p></td>
+<td><p>turns on/off the explicit multi-element variant of the SNAP bispectrum components</p></td>
+</tr>
+<tr class="row-even"><td><p>quadratic_pod_potential</p></td>
+<td><p>0</p></td>
+<td><p>BOOL</p></td>
+<td><p>turns on/off quadratic POD potential</p></td>
+</tr>
+</tbody>
+</table>
+<p>All keywords except <em>species</em> have default values. If a keyword is not
+set in the input file, its default value is used.  The next table
+describes all keywords that can be used in the second input file
+(i.e. <code class="docutils literal notranslate"><span class="pre">Ta_data.pod</span></code> in the example above):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>file_format</p></td>
+<td><p>extxyz</p></td>
+<td><p>STRING</p></td>
+<td><p>only the extended xyz format (extxyz) is currently supported</p></td>
+</tr>
+<tr class="row-odd"><td><p>file_extension</p></td>
+<td><p>xyz</p></td>
+<td><p>STRING</p></td>
+<td><p>extension of the data files</p></td>
+</tr>
+<tr class="row-even"><td><p>path_to_training_data_set</p></td>
+<td><p>(none)</p></td>
+<td><p>STRING</p></td>
+<td><p>specifies the path to training data files in double quotes</p></td>
+</tr>
+<tr class="row-odd"><td><p>path_to_test_data_set</p></td>
+<td><p>“”</p></td>
+<td><p>STRING</p></td>
+<td><p>specifies the path to test data files in double quotes</p></td>
+</tr>
+<tr class="row-even"><td><p>fraction_training_data_set</p></td>
+<td><p>1.0</p></td>
+<td><p>REAL</p></td>
+<td><p>a real number (&lt;= 1.0) specifies the fraction of the training set used to fit POD</p></td>
+</tr>
+<tr class="row-odd"><td><p>randomize_training_data_set</p></td>
+<td><p>0</p></td>
+<td><p>BOOL</p></td>
+<td><p>turns on/off randomization of the training set</p></td>
+</tr>
+<tr class="row-even"><td><p>fitting_weight_energy</p></td>
+<td><p>100.0</p></td>
+<td><p>REAL</p></td>
+<td><p>a real constant specifies the weight for energy in the least-squares fit</p></td>
+</tr>
+<tr class="row-odd"><td><p>fitting_weight_force</p></td>
+<td><p>1.0</p></td>
+<td><p>REAL</p></td>
+<td><p>a real constant specifies the weight for force in the least-squares fit</p></td>
+</tr>
+<tr class="row-even"><td><p>fitting_regularization_parameter</p></td>
+<td><p>1.0e-10</p></td>
+<td><p>REAL</p></td>
+<td><p>a real constant specifies the regularization parameter in the least-squares fit</p></td>
+</tr>
+<tr class="row-odd"><td><p>error_analysis_for_training_data_set</p></td>
+<td><p>0</p></td>
+<td><p>BOOL</p></td>
+<td><p>turns on/off error analysis for the training data set</p></td>
+</tr>
+<tr class="row-even"><td><p>error_analysis_for_test_data_set</p></td>
+<td><p>0</p></td>
+<td><p>BOOL</p></td>
+<td><p>turns on/off error analysis for the test data set</p></td>
+</tr>
+<tr class="row-odd"><td><p>basename_for_output_files</p></td>
+<td><p>pod</p></td>
+<td><p>STRING</p></td>
+<td><p>a basename string added to the output files</p></td>
+</tr>
+<tr class="row-even"><td><p>precision_for_pod_coefficients</p></td>
+<td><p>8</p></td>
+<td><p>INT</p></td>
+<td><p>number of digits after the decimal points for numbers in the coefficient file</p></td>
+</tr>
+</tbody>
+</table>
+<p>All keywords except <em>path_to_training_data_set</em> have default values. If
+a keyword is not set in the input file, its default value is used.  After
+successful training, a number of output files are produced, if enabled:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;basename&gt;_training_errors.pod</span></code>  reports the errors in energy and forces for the training data set</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;basename&gt;_training_analysis.pod</span></code> reports detailed errors for all training configurations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;basename&gt;_test_errors.pod</span></code> reports errors for the test data set</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;basename&gt;_test_analysis.pod</span></code> reports detailed errors for all test configurations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;basename&gt;_coefficients.pod</span></code> contains the coefficients of the POD potential</p></li>
+</ul>
+<p>After training the POD potential, <code class="docutils literal notranslate"><span class="pre">Ta_param.pod</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;basename&gt;_coefficients.pod</span></code>
+are the two files needed to use the POD potential in LAMMPS. See
+<a class="reference internal" href="pair_pod.html"><span class="doc">pair_style pod</span></a> for using the POD potential. Examples
+about training and using POD potentials are found in the directory
+lammps/examples/PACKAGES/pod.</p>
+</section>
+<section id="parameterized-potential-energy-surface">
+<h2>Parameterized Potential Energy Surface<a class="headerlink" href="#parameterized-potential-energy-surface" title="Permalink to this heading"></a></h2>
+<p>We consider a multi-element system of <em>N</em> atoms with <span class="math notranslate nohighlight">\(N_{\rm e}\)</span>
+unique elements.  We denote by <span class="math notranslate nohighlight">\(\boldsymbol r_n\)</span> and <span class="math notranslate nohighlight">\(Z_n\)</span>
+position vector and type of an atom <em>n</em> in the system,
+respectively. Note that we have <span class="math notranslate nohighlight">\(Z_n \in \{1, \ldots, N_{\rm e}
+\}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol R = (\boldsymbol r_1, \boldsymbol r_2, \ldots,
+\boldsymbol r_N) \in \mathbb{R}^{3N}\)</span>, and <span class="math notranslate nohighlight">\(\boldsymbol Z = (Z_1,
+Z_2, \ldots, Z_N) \in \mathbb{N}^{N}\)</span>. The potential energy surface
+(PES) of the system can be expressed as a many-body expansion of the
+form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}E(\boldsymbol R, \boldsymbol Z, \boldsymbol{\eta}, \boldsymbol{\mu}) \ = \ &amp; \sum_{i} V^{(1)}(\boldsymbol r_i, Z_i, \boldsymbol \mu^{(1)} ) + \frac12 \sum_{i,j} V^{(2)}(\boldsymbol r_i, \boldsymbol r_j, Z_i, Z_j, \boldsymbol \eta, \boldsymbol \mu^{(2)})  \\
+&amp; + \frac16 \sum_{i,j,k} V^{(3)}(\boldsymbol r_i, \boldsymbol r_j, \boldsymbol r_k, Z_i, Z_j, Z_k, \boldsymbol \eta, \boldsymbol \mu^{(3)}) + \ldots\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(V^{(1)}\)</span> is the one-body potential often used for
+representing external field or energy of isolated elements, and the
+higher-body potentials <span class="math notranslate nohighlight">\(V^{(2)}, V^{(3)}, \ldots\)</span> are symmetric,
+uniquely defined, and zero if two or more indices take identical values.
+The superscript on each potential denotes its body order. Each <em>q</em>-body
+potential <span class="math notranslate nohighlight">\(V^{(q)}\)</span> depends on <span class="math notranslate nohighlight">\(\boldsymbol \mu^{(q)}\)</span> which
+are sets of parameters to fit the PES. Note that <span class="math notranslate nohighlight">\(\boldsymbol \mu\)</span>
+is a collection of all potential parameters <span class="math notranslate nohighlight">\(\boldsymbol
+\mu^{(1)}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol \mu^{(2)}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol
+\mu^{(3)}\)</span>, etc, and that <span class="math notranslate nohighlight">\(\boldsymbol \eta\)</span> is a set of
+hyper-parameters such as inner cut-off radius <span class="math notranslate nohighlight">\(r_{\rm in}\)</span> and
+outer cut-off radius <span class="math notranslate nohighlight">\(r_{\rm cut}\)</span>.</p>
+<p>Interatomic potentials rely on parameters to learn relationship between
+atomic environments and interactions.  Since interatomic potentials are
+approximations by nature, their parameters need to be set to some
+reference values or fitted against data by necessity.  Typically,
+potential fitting finds optimal parameters, <span class="math notranslate nohighlight">\(\boldsymbol \mu^*\)</span>,
+to minimize a certain loss function of the predicted quantities and
+data. Since the fitted potential depends on the data set used to fit it,
+different data sets will yield different optimal parameters and thus
+different fitted potentials. When fitting the same functional form on
+<em>Q</em> different data sets, we would obtain <em>Q</em> different optimized
+potentials, <span class="math notranslate nohighlight">\(E(\boldsymbol R,\boldsymbol Z, \boldsymbol \eta,
+\boldsymbol \mu_q^*), 1 \le q \le Q\)</span>.  Consequently, there exist many
+different sets of optimized parameters for empirical interatomic
+potentials.</p>
+<p>Instead of optimizing the potential parameters, inspired by the reduced
+basis method <a class="reference internal" href="#grepl20072"><span class="std std-ref">(Grepl)</span></a> for parameterized partial
+differential equations, we view the parameterized PES as a parametric
+manifold of potential energies</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{M} = \{E(\boldsymbol R, \boldsymbol Z, \boldsymbol \eta, \boldsymbol \mu) \ | \  \boldsymbol \mu \in \Omega^{\boldsymbol \mu} \}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Omega^{\boldsymbol \mu}\)</span> is a parameter domain in which
+<span class="math notranslate nohighlight">\(\boldsymbol \mu\)</span> resides.  The parametric manifold
+<span class="math notranslate nohighlight">\(\mathcal{M}\)</span> contains potential energy surfaces for all values of
+<span class="math notranslate nohighlight">\(\boldsymbol \mu \in \Omega^{\boldsymbol \mu}\)</span>.  Therefore, the
+parametric manifold yields a much richer and more transferable atomic
+representation than any particular individual PES <span class="math notranslate nohighlight">\(E(\boldsymbol
+R, \boldsymbol Z, \boldsymbol \eta, \boldsymbol \mu^*)\)</span>.</p>
+<p>We propose specific forms of the parameterized potentials for one-body,
+two-body, and three-body interactions. We apply the Karhunen-Loeve
+expansion to snapshots of the parameterized potentials to obtain sets of
+orthogonal basis functions. These basis functions are aggregated
+according to the chemical elements of atoms, thus leading to
+multi-element proper orthogonal descriptors.</p>
+</section>
+<section id="proper-orthogonal-descriptors">
+<h2>Proper Orthogonal Descriptors<a class="headerlink" href="#proper-orthogonal-descriptors" title="Permalink to this heading"></a></h2>
+<p>Proper orthogonal descriptors are finger prints characterizing the
+radial and angular distribution of a system of atoms. The detailed
+mathematical definition is given in the paper by Nguyen and Rohskopf
+<a class="reference internal" href="#nguyen20222"><span class="std std-ref">(Nguyen)</span></a>.</p>
+<p>The descriptors for the one-body interaction are used to capture energy
+of isolated elements and defined as follows</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}D_{ip}^{(1)} =  \left\{
+    \begin{array}{ll}
+    1, &amp; \mbox{if } Z_i = p \\
+    0, &amp; \mbox{if } Z_i \neq p
+    \end{array}
+\right.\end{split}\]</div>
+<p>for <span class="math notranslate nohighlight">\(1 \le i \le N, 1 \le p \le N_{\rm e}\)</span>. The number of one-body
+descriptors per atom is equal to the number of elements. The one-body
+descriptors are independent of atom positions, but dependent on atom
+types. The one-body descriptors are active only when the keyword
+<em>onebody</em> is set to 1.</p>
+<p>We adopt the usual assumption that the direct interaction between two
+atoms vanishes smoothly when their distance is greater than the outer
+cutoff distance <span class="math notranslate nohighlight">\(r_{\rm cut}\)</span>. Furthermore, we assume that two
+atoms can not get closer than the inner cutoff distance <span class="math notranslate nohighlight">\(r_{\rm
+in}\)</span> due to the Pauli repulsion principle. Let <span class="math notranslate nohighlight">\(r \in (r_{\rm in},
+r_{\rm cut})\)</span>, we introduce the following parameterized radial functions</p>
+<div class="math notranslate nohighlight">
+\[\phi(r, r_{\rm in}, r_{\rm cut}, \alpha, \beta)  = \frac{\sin (\alpha \pi x) }{r - r_{\rm in}}, \qquad  \varphi(r, \gamma)  = \frac{1}{r^\gamma} ,\]</div>
+<p>where the scaled distance function <span class="math notranslate nohighlight">\(x\)</span> is defined below to enrich the two-body manifold</p>
+<div class="math notranslate nohighlight">
+\[x(r, r_{\rm in}, r_{\rm cut}, \beta) = \frac{e^{-\beta(r - r_{\rm in})/(r_{\rm cut} - r_{\rm in})} - 1}{e^{-\beta} - 1} .\]</div>
+<p>We introduce the following function as a convex combination of the two functions</p>
+<div class="math notranslate nohighlight">
+\[\psi(r, r_{\rm in}, r_{\rm cut}, \alpha, \beta, \gamma, \kappa)  = \kappa \phi(r, r_{\rm in}, r_{\rm cut}, \alpha, \beta) + (1- \kappa)  \varphi(r, \gamma) .\]</div>
+<p>We see that <span class="math notranslate nohighlight">\(\psi\)</span> is a function of distance <span class="math notranslate nohighlight">\(r\)</span>, cut-off
+distances <span class="math notranslate nohighlight">\(r_{\rm in}\)</span> and <span class="math notranslate nohighlight">\(r_{\rm cut}\)</span>, and parameters
+<span class="math notranslate nohighlight">\(\alpha, \beta, \gamma, \kappa\)</span>. Together these parameters allow
+the function <span class="math notranslate nohighlight">\(\psi\)</span> to characterize a diverse spectrum of two-body
+interactions within the cut-off interval <span class="math notranslate nohighlight">\((r_{\rm in}, r_{\rm
+cut})\)</span>.</p>
+<p>Next, we introduce the following parameterized potential</p>
+<div class="math notranslate nohighlight">
+\[W^{(2)}(r_{ij}, \boldsymbol \eta, \boldsymbol \mu^{(2)})  = f_{\rm c}(r_{ij}, \boldsymbol \eta) \psi(r_{ij}, \boldsymbol \eta, \boldsymbol \mu^{(2)})\]</div>
+<p>where <span class="math notranslate nohighlight">\(\eta_1 = r_{\rm in}, \eta_2 = r_{\rm cut}, \mu_1^{(2)} =
+\alpha, \mu_2^{(2)} = \beta, \mu_3^{(2)} = \gamma\)</span>, and
+<span class="math notranslate nohighlight">\(\mu_4^{(2)} = \kappa\)</span>. Here the cut-off function <span class="math notranslate nohighlight">\(f_{\rm
+c}(r_{ij}, \boldsymbol \eta)\)</span> proposed in [refs] is used to ensure the
+smooth vanishing of the potential and its derivative for <span class="math notranslate nohighlight">\(r_{ij}
+\ge r_{\rm cut}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[f_{\rm c}(r_{ij},  r_{\rm in}, r_{\rm cut})  =  \exp \left(1 -\frac{1}{\sqrt{\left(1 - \frac{(r-r_{\rm in})^3}{(r_{\rm cut} - r_{\rm in})^3} \right)^2 + 10^{-6}}} \right)\]</div>
+<p>Based on the parameterized potential, we form a set of snapshots as
+follows.  We assume that we are given <span class="math notranslate nohighlight">\(N_{\rm s}\)</span> parameter tuples
+<span class="math notranslate nohighlight">\(\boldsymbol \mu^{(2)}_\ell, 1 \le \ell \le N_{\rm s}\)</span>. We
+introduce the following set of snapshots on <span class="math notranslate nohighlight">\((r_{\rm in}, r_{\rm
+cut})\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\xi_\ell(r_{ij}, \boldsymbol \eta) =  W^{(2)}(r_{ij}, \boldsymbol \eta, \boldsymbol \mu^{(2)}_\ell),  \quad \ell = 1, \ldots, N_{\rm s} .\]</div>
+<p>To ensure adequate sampling of the PES for different parameters, we
+choose <span class="math notranslate nohighlight">\(N_{\rm s}\)</span> parameter points <span class="math notranslate nohighlight">\(\boldsymbol
+\mu^{(2)}_\ell = (\alpha_\ell, \beta_\ell, \gamma_\ell, \kappa_\ell), 1
+\le \ell \le N_{\rm s}\)</span> as follows. The parameters <span class="math notranslate nohighlight">\(\alpha \in [1,
+N_\alpha]\)</span> and <span class="math notranslate nohighlight">\(\gamma \in [1, N_\gamma]\)</span> are integers, where
+<span class="math notranslate nohighlight">\(N_\alpha\)</span> and <span class="math notranslate nohighlight">\(N_\gamma\)</span> are the highest degrees for
+<span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span>, respectively. We next choose
+<span class="math notranslate nohighlight">\(N_\beta\)</span> different values of <span class="math notranslate nohighlight">\(\beta\)</span> in the interval
+<span class="math notranslate nohighlight">\([\beta_{\min}, \beta_{\max}]\)</span>, where <span class="math notranslate nohighlight">\(\beta_{\min} = 0\)</span> and
+<span class="math notranslate nohighlight">\(\beta_{\max} = 4\)</span>. The parameter <span class="math notranslate nohighlight">\(\kappa\)</span> can be set either
+0 or 1.  Hence, the total number of parameter points is <span class="math notranslate nohighlight">\(N_{\rm s}
+= N_\alpha N_\beta + N_\gamma\)</span>.  Although <span class="math notranslate nohighlight">\(N_\alpha, N_\beta,
+N_\gamma\)</span> can be chosen conservatively large, we find that
+<span class="math notranslate nohighlight">\(N_\alpha = 6, N_\beta = 3, N_\gamma = 8\)</span> are adequate for most
+problems.  Note that <span class="math notranslate nohighlight">\(N_\alpha\)</span> and <span class="math notranslate nohighlight">\(N_\gamma\)</span> correspond to
+<em>bessel_polynomial_degree</em> and <em>inverse_polynomial_degree</em>,
+respectively.</p>
+<p>We employ the Karhunen-Loeve (KL) expansion to generate an orthogonal
+basis set which is known to be optimal for representation of the
+snapshot family <span class="math notranslate nohighlight">\(\{\xi_\ell\}_{\ell=1}^{N_{\rm s}}\)</span>. The two-body
+orthogonal basis functions are computed as follows</p>
+<div class="math notranslate nohighlight">
+\[U^{(2)}_m(r_{ij}, \boldsymbol \eta) = \sum_{\ell = 1}^{N_{\rm s}} A_{\ell m}(\boldsymbol \eta) \,  \xi_\ell(r_{ij}, \boldsymbol \eta), \qquad m = 1, \ldots, N_{\rm 2b} ,\]</div>
+<p>where the matrix <span class="math notranslate nohighlight">\(\boldsymbol A \in \mathbb{R}^{N_{\rm s} \times
+N_{\rm s}}\)</span> consists of eigenvectors of the eigenvalue problem</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol C \boldsymbol a = \lambda \boldsymbol a\]</div>
+<p>with the entries of <span class="math notranslate nohighlight">\(\boldsymbol C \in \mathbb{R}^{N_{\rm s} \times N_{\rm s}}\)</span> being given by</p>
+<div class="math notranslate nohighlight">
+\[C_{ij}  = \frac{1}{N_{\rm s}} \int_{r_{\rm in}}^{r_{\rm cut}} \xi_i(x, \boldsymbol \eta) \xi_j(x, \boldsymbol \eta) dx, \quad 1 \le i, j \le N_{\rm s}\]</div>
+<p>Note that the eigenvalues <span class="math notranslate nohighlight">\(\lambda_\ell, 1 \le \ell \le N_{\rm
+s}\)</span>, are ordered such that <span class="math notranslate nohighlight">\(\lambda_1 \ge \lambda_2 \ge \ldots \ge
+\lambda_{N_{\rm s}}\)</span>, and that the matrix <span class="math notranslate nohighlight">\(\boldsymbol A\)</span> is
+pe-computed and stored for any given <span class="math notranslate nohighlight">\(\boldsymbol \eta\)</span>.  Owing to
+the rapid convergence of the KL expansion, only a small number of
+orthogonal basis functions is needed to obtain accurate
+approximation. The value of <span class="math notranslate nohighlight">\(N_{\rm 2b}\)</span> corresponds to
+<em>twobody_number_radial_basis_functions</em>.</p>
+<p>The two-body proper orthogonal descriptors at each atom <em>i</em> are computed
+by summing the orthogonal basis functions over the neighbors of atom <em>i</em>
+and numerating on the atom types as follows</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}D^{(2)}_{im l(p, q) }(\boldsymbol \eta)  = \left\{
+\begin{array}{ll}
+\displaystyle \sum_{\{j | Z_j = q\}} U^{(2)}_m(r_{ij},  \boldsymbol \eta), &amp; \mbox{if } Z_i = p \\
+0, &amp; \mbox{if } Z_i \neq p
+\end{array}
+\right.\end{split}\]</div>
+<p>for <span class="math notranslate nohighlight">\(1 \le i \le N, 1 \le m \le N_{\rm 2b}, 1 \le q, p \le N_{\rm
+e}\)</span>. Here <span class="math notranslate nohighlight">\(l(p,q)\)</span> is a symmetric index mapping such that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}l(p,q)  = \left\{
+\begin{array}{ll}
+q + (p-1) N_{\rm e} - p(p-1)/2, &amp; \mbox{if } q \ge p \\
+p + (q-1) N_{\rm e} - q(q-1)/2, &amp; \mbox{if } q &lt; p .
+\end{array}
+\right.\end{split}\]</div>
+<p>The number of two-body descriptors per atom is thus <span class="math notranslate nohighlight">\(N_{\rm 2b}
+N_{\rm e}(N_{\rm e}+1)/2\)</span>.</p>
+<p>It is important to note that the orthogonal basis functions do not
+depend on the atomic numbers <span class="math notranslate nohighlight">\(Z_i\)</span> and <span class="math notranslate nohighlight">\(Z_j\)</span>. Therefore, the
+cost of evaluating the basis functions and their derivatives with
+respect to <span class="math notranslate nohighlight">\(r_{ij}\)</span> is independent of the number of elements
+<span class="math notranslate nohighlight">\(N_{\rm e}\)</span>. Consequently, even though the two-body proper
+orthogonal descriptors depend on <span class="math notranslate nohighlight">\(\boldsymbol Z\)</span>, their
+computational complexity is independent of <span class="math notranslate nohighlight">\(N_{\rm e}\)</span>.</p>
+<p>In order to provide proper orthogonal descriptors for three-body
+interactions, we need to introduce a three-body parameterized
+potential. In particular, the three-body potential is defined as a
+product of radial and angular functions as follows</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}W^{(3)}(r_{ij}, r_{ik}, \theta_{ijk}, \boldsymbol \eta, \boldsymbol \mu^{(3)})  =  \psi(r_{ij}, r_{\rm min}, r_{\rm max}, \alpha, \beta, \gamma, \kappa) f_{\rm c}(r_{ij}, r_{\rm min}, r_{\rm max}) \\
+\psi(r_{ik}, r_{\rm min}, r_{\rm max}, \alpha, \beta, \gamma, \kappa) f_{\rm c}(r_{ik}, r_{\rm min}, r_{\rm max}) \\
+\cos (\sigma \theta_{ijk} + \zeta)\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma\)</span> is the periodic multiplicity, <span class="math notranslate nohighlight">\(\zeta\)</span> is the
+equilibrium angle, <span class="math notranslate nohighlight">\(\boldsymbol \mu^{(3)} = (\alpha, \beta,
+\gamma, \kappa, \sigma, \zeta)\)</span>. The three-body potential provides an
+angular fingerprint of the atomic environment through the bond angles
+<span class="math notranslate nohighlight">\(\theta_{ijk}\)</span> formed with each pair of neighbors <span class="math notranslate nohighlight">\(j\)</span> and
+<span class="math notranslate nohighlight">\(k\)</span>.  Compared to the two-body potential, the three-body potential
+has two extra parameters <span class="math notranslate nohighlight">\((\sigma, \zeta)\)</span> associated with the
+angular component.</p>
+<p>Let <span class="math notranslate nohighlight">\(\boldsymbol \varrho = (\alpha, \beta, \gamma, \kappa)\)</span>. We
+assume that we are given <span class="math notranslate nohighlight">\(L_{\rm r}\)</span> parameter tuples
+<span class="math notranslate nohighlight">\(\boldsymbol \varrho_\ell, 1 \le \ell \le L_{\rm r}\)</span>.  We
+introduce the following set of snapshots on <span class="math notranslate nohighlight">\((r_{\min},
+r_{\max})\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\zeta_\ell(r_{ij}, r_{\rm min}, r_{\rm max} ) =  \psi(r_{ij}, r_{\rm min}, r_{\rm max}, \boldsymbol \varrho_\ell) f_{\rm c}(r_{ij}, r_{\rm min},  r_{\rm max}), \quad 1 \le \ell \le L_{\rm r} .\]</div>
+<p>We apply the Karhunen-Loeve (KL) expansion to this set of snapshots to
+obtain orthogonal basis functions as follows</p>
+<div class="math notranslate nohighlight">
+\[U^{r}_m(r_{ij}, r_{\rm min}, r_{\rm max} ) = \sum_{\ell = 1}^{L_{\rm r}} A_{\ell m} \,  \zeta_\ell(r_{ij}, r_{\rm min}, r_{\rm max} ), \qquad m = 1, \ldots, N_{\rm r} ,\]</div>
+<p>where the matrix <span class="math notranslate nohighlight">\(\boldsymbol A \in \mathbb{R}^{L_{\rm r} \times L_{\rm r}}\)</span> consists
+of eigenvectors of the eigenvalue problem. For the parameterized angular function,
+we consider angular basis functions</p>
+<div class="math notranslate nohighlight">
+\[U^{a}_n(\theta_{ijk}) = \cos ((n-1) \theta_{ijk}), \qquad  n = 1,\ldots, N_{\rm a},\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_{\rm a}\)</span> is the number of angular basis functions. The orthogonal
+basis functions for the parameterized potential are computed as follows</p>
+<div class="math notranslate nohighlight">
+\[U^{(3)}_{mn}(r_{ij}, r_{ik}, \theta_{ijk}, \boldsymbol \eta) = U^{r}_m(r_{ij}, \boldsymbol \eta) U^{r}_m(r_{ik}, \boldsymbol \eta) U^{a}_n(\theta_{ijk}),\]</div>
+<p>for <span class="math notranslate nohighlight">\(1 \le m \le N_{\rm r}, 1 \le n \le N_{\rm a}\)</span>. The number of three-body
+orthogonal basis functions is equal to <span class="math notranslate nohighlight">\(N_{\rm 3b} = N_{\rm r} N_{\rm a}\)</span> and
+independent of the number of elements. The value of <span class="math notranslate nohighlight">\(N_{\rm r}\)</span> corresponds to
+<em>threebody_number_radial_basis_functions</em>, while that of <span class="math notranslate nohighlight">\(N_{\rm a}\)</span> to
+<em>threebody_number_angular_basis_functions</em>.</p>
+<p>The three-body proper orthogonal descriptors at each atom <em>i</em>
+are obtained by summing over the neighbors <em>j</em> and <em>k</em> of atom <em>i</em> as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}D^{(3)}_{imn \ell(p, q, s)}(\boldsymbol \eta)  = \left\{
+\begin{array}{ll}
+\displaystyle \sum_{\{j | Z_j = q\}} \sum_{\{k | Z_k = s\}} U^{(3)}_{mn}(r_{ij}, r_{ik}, \theta_{ijk}, \boldsymbol \eta), &amp; \mbox{if } Z_i = p \\
+0, &amp; \mbox{if } Z_i \neq p
+\end{array}
+\right.\end{split}\]</div>
+<p>for <span class="math notranslate nohighlight">\(1 \le i \le N, 1 \le m \le N_{\rm r}, 1 \le n \le N_{\rm a}, 1 \le q, p, s \le N_{\rm e}\)</span>,
+where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\ell(p,q,s)  = \left\{
+\begin{array}{ll}
+s + (q-1) N_{\rm e} - q(q-1)/2 + (p-1)N_{\rm e}(1+N_{\rm e})/2 , &amp; \mbox{if } s \ge q \\
+q + (s-1) N_{\rm e} - s(s-1)/2 + (p-1)N_{\rm e}(1+N_{\rm e})/2, &amp; \mbox{if } s &lt; q .
+\end{array}
+\right.\end{split}\]</div>
+<p>The number of three-body descriptors per atom is thus <span class="math notranslate nohighlight">\(N_{\rm 3b} N_{\rm e}^2(N_{\rm e}+1)/2\)</span>.
+While the number of three-body PODs is cubic function of the number of elements,
+the computational complexity of the three-body PODs is independent of the number of elements.</p>
+</section>
+<section id="four-body-snap-descriptors">
+<h2>Four-Body SNAP Descriptors<a class="headerlink" href="#four-body-snap-descriptors" title="Permalink to this heading"></a></h2>
+<p>In addition to the proper orthogonal descriptors described above, we also employ
+the spectral neighbor analysis potential (SNAP) descriptors. SNAP uses bispectrum components
+to characterize the local neighborhood of each atom in a very general way. The mathematical definition
+of the bispectrum calculation and its derivatives w.r.t. atom positions is described in
+<a class="reference internal" href="compute_sna_atom.html"><span class="doc">compute snap</span></a>. In SNAP, the
+total energy is decomposed into a sum over atom energies. The energy of
+atom <em>i</em> is expressed as a weighted sum over bispectrum components.</p>
+<div class="math notranslate nohighlight">
+\[E_i^{\rm SNAP} = \sum_{k=1}^{N_{\rm 4b}} \sum_{p=1}^{N_{\rm e}} c_{kp}^{(4)} D_{ikp}^{(4)}\]</div>
+<p>where the SNAP descriptors are related to the bispectrum components by</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}D^{(4)}_{ikp}  = \left\{
+\begin{array}{ll}
+\displaystyle B_{ik}, &amp; \mbox{if } Z_i = p \\
+0, &amp; \mbox{if } Z_i \neq p
+\end{array}
+\right.\end{split}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(B_{ik}\)</span> is the <em>k</em>-th bispectrum component of atom <em>i</em>. The number of
+bispectrum components <span class="math notranslate nohighlight">\(N_{\rm 4b}\)</span> depends on the value of <em>fourbody_snap_twojmax</em> <span class="math notranslate nohighlight">\(= 2 J_{\rm max}\)</span>
+and <em>fourbody_snap_chemflag</em>. If <em>fourbody_snap_chemflag</em> = 0
+then <span class="math notranslate nohighlight">\(N_{\rm 4b} = (J_{\rm max}+1)(J_{\rm max}+2)(J_{\rm max}+1.5)/3\)</span>.
+If <em>fourbody_snap_chemflag</em> = 1 then <span class="math notranslate nohighlight">\(N_{\rm 4b} = N_{\rm e}^3 (J_{\rm max}+1)(J_{\rm max}+2)(J_{\rm max}+1.5)/3\)</span>.
+The bispectrum calculation is described in more detail in <a class="reference internal" href="compute_sna_atom.html"><span class="doc">compute sna/atom</span></a>.</p>
+</section>
+<section id="linear-proper-orthogonal-descriptor-potentials">
+<h2>Linear Proper Orthogonal Descriptor Potentials<a class="headerlink" href="#linear-proper-orthogonal-descriptor-potentials" title="Permalink to this heading"></a></h2>
+<p>The proper orthogonal descriptors and SNAP descriptors are used to define the atomic energies
+in the following expansion</p>
+<div class="math notranslate nohighlight">
+\[E_{i}(\boldsymbol \eta) = \sum_{p=1}^{N_{\rm e}} c^{(1)}_p D^{(1)}_{ip} + \sum_{m=1}^{N_{\rm 2b}}  \sum_{l=1}^{N_{\rm e}(N_{\rm e}+1)/2} c^{(2)}_{ml} D^{(2)}_{iml}(\boldsymbol \eta) + \sum_{m=1}^{N_{\rm r}} \sum_{n=1}^{N_{\rm a}}  \sum_{\ell=1}^{N_{\rm e}^2(N_{\rm e}+1)/2} c^{(3)}_{mn\ell} D^{(3)}_{imn\ell}(\boldsymbol \eta) + \sum_{k=1}^{N_{\rm 4b}} \sum_{p=1}^{N_{\rm e}} c_{kp}^{(4)} D_{ikp}^{(4)}(\boldsymbol \eta),\]</div>
+<p>where <span class="math notranslate nohighlight">\(D^{(1)}_{ip}, D^{(2)}_{iml}, D^{(3)}_{imn\ell}, D^{(4)}_{ikp}\)</span> are the  one-body, two-body, three-body, four-body descriptors,
+respectively, and <span class="math notranslate nohighlight">\(c^{(1)}_p, c^{(2)}_{ml}, c^{(3)}_{mn\ell}, c^{(4)}_{kp}\)</span> are their respective expansion
+coefficients. In a more compact notation that implies summation over descriptor indices
+the atomic energies can be written as</p>
+<div class="math notranslate nohighlight">
+\[E_i(\boldsymbol \eta) =  \sum_{m=1}^{N_{\rm e}} c^{(1)}_m D^{(1)}_{im} +  \sum_{m=1}^{N_{\rm d}^{(2)}} c^{(2)}_k D^{(2)}_{im} + \sum_{m=1}^{N_{\rm d}^{(3)}} c^{(3)}_m D^{(3)}_{im} + \sum_{m=1}^{N_{\rm d}^{(4)}} c^{(4)}_m D^{(4)}_{im}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_{\rm d}^{(2)} = N_{\rm 2b} N_{\rm e} (N_{\rm e}+1)/2\)</span>,
+<span class="math notranslate nohighlight">\(N_{\rm d}^{(3)} = N_{\rm 3b} N_{\rm e}^2 (N_{\rm e}+1)/2\)</span>, and
+<span class="math notranslate nohighlight">\(N_{\rm d}^{(4)} = N_{\rm 4b} N_{\rm e}\)</span> are
+the number of two-body, three-body, and four-body descriptors, respectively.</p>
+<p>The potential energy is then obtained by summing local atomic energies <span class="math notranslate nohighlight">\(E_i\)</span>
+for all atoms <span class="math notranslate nohighlight">\(i\)</span> in the system</p>
+<div class="math notranslate nohighlight">
+\[E(\boldsymbol \eta) = \sum_{i}^N E_{i}(\boldsymbol \eta)\]</div>
+<p>Because the descriptors are one-body, two-body, and three-body terms,
+the resulting POD potential is a three-body PES. We can express the potential
+energy as a linear combination of the global descriptors as follows</p>
+<div class="math notranslate nohighlight">
+\[E(\boldsymbol \eta) = \sum_{m=1}^{N_{\rm e}} c^{(1)}_m d^{(1)}_{m} +  \sum_{m=1}^{N_{\rm d}^{(2)}} c^{(2)}_m d^{(2)}_{m} + \sum_{m=1}^{N_{\rm d}^{(3)}} c^{(3)}_m d^{(3)}_{m} + \sum_{m=1}^{N_{\rm d}^{(4)}} c^{(4)}_m d^{(4)}_{m}\]</div>
+<p>where  the global descriptors are given by</p>
+<div class="math notranslate nohighlight">
+\[d_{m}^{(1)}(\boldsymbol \eta) = \sum_{i=1}^N D_{im}^{(1)}(\boldsymbol \eta), \quad d_{m}^{(2)}(\boldsymbol \eta) = \sum_{i=1}^N D_{im}^{(2)}(\boldsymbol \eta), \quad d_{m}^{(3)}(\boldsymbol \eta) = \sum_{i=1}^N D_{im}^{(3)}(\boldsymbol \eta), \quad d_{m}^{(4)}(\boldsymbol \eta) = \sum_{i=1}^N D_{im}^{(4)}(\boldsymbol \eta)\]</div>
+<p>Hence, we obtain the atomic forces as</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol F = -\nabla E(\boldsymbol \eta) = - \sum_{m=1}^{N_{\rm d}^{(2)}}  c^{(2)}_m  \nabla d_m^{(2)} - \sum_{m=1}^{N_{\rm d}^{(3)}}  c^{(3)}_m \nabla d_m^{(3)} - \sum_{m=1}^{N_{\rm d}^{(4)}}  c^{(4)}_m \nabla d_m^{(4)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\nabla d_m^{(2)}\)</span>, <span class="math notranslate nohighlight">\(\nabla d_m^{(3)}\)</span> and <span class="math notranslate nohighlight">\(\nabla d_m^{(4)}\)</span> are derivatives of the two-body
+three-body, and four-body global descriptors with respect to atom positions, respectively.
+Note that since the first-body global descriptors are constant, their derivatives are zero.</p>
+</section>
+<section id="quadratic-proper-orthogonal-descriptor-potentials">
+<h2>Quadratic Proper Orthogonal Descriptor Potentials<a class="headerlink" href="#quadratic-proper-orthogonal-descriptor-potentials" title="Permalink to this heading"></a></h2>
+<p>We recall two-body PODs <span class="math notranslate nohighlight">\(D^{(2)}_{ik}, 1 \le k \le N_{\rm d}^{(2)}\)</span>,
+and three-body PODs <span class="math notranslate nohighlight">\(D^{(3)}_{im}, 1 \le m \le N_{\rm d}^{(3)}\)</span>,
+with <span class="math notranslate nohighlight">\(N_{\rm d}^{(2)} = N_{\rm 2b} N_{\rm e} (N_{\rm e}+1)/2\)</span> and
+<span class="math notranslate nohighlight">\(N_{\rm d}^{(3)} = N_{\rm 3b} N_{\rm e}^2 (N_{\rm e}+1)/2\)</span> being
+the number of descriptors per atom for the two-body PODs and three-body PODs,
+respectively. We employ them to define a new set of atomic descriptors as follows</p>
+<div class="math notranslate nohighlight">
+\[D^{(2*3)}_{ikm} = \frac{1}{2N}\left( D^{(2)}_{ik} \sum_{j=1}^N D^{(3)}_{jm} + D^{(3)}_{im} \sum_{j=1}^N D^{(2)}_{jk}  \right)\]</div>
+<p>for <span class="math notranslate nohighlight">\(1 \le i \le N, 1 \le k \le N_{\rm d}^{(2)}, 1 \le m \le N_{\rm d}^{(3)}\)</span>.
+The new descriptors are four-body because they involve central atom <span class="math notranslate nohighlight">\(i\)</span> together
+with three neighbors <span class="math notranslate nohighlight">\(j, k\)</span> and <span class="math notranslate nohighlight">\(l\)</span>. The total number of new  descriptors per atom is equal to</p>
+<div class="math notranslate nohighlight">
+\[N_{\rm d}^{(2*3)} = N_{\rm d}^{(2)} * N_{\rm d}^{(3)} = N_{\rm 2b} N_{\rm 3b} N_{\rm e}^3 (N_{\rm e}+1)^2/4 .\]</div>
+<p>The new global descriptors are calculated as</p>
+<div class="math notranslate nohighlight">
+\[d^{(2*3)}_{km} = \sum_{i=1}^N D^{(2*3)}_{ikm} = \left( \sum_{i=1}^N D^{(2)}_{ik} \right) \left( \sum_{i=1}^N D^{(3)}_{im} \right) = d^{(2)}_{k} d^{(3)}_m,\]</div>
+<p>for <span class="math notranslate nohighlight">\(1 \le k \le N_{\rm d}^{(2)}, 1 \le m \le N_{\rm d}^{(3)}\)</span>. Hence, the gradient
+of the new global descriptors with respect to atom positions is calculated as</p>
+<div class="math notranslate nohighlight">
+\[\nabla d^{(2*3)}_{km} = d^{(3)}_m \nabla d^{(2)}_{k}  +  d^{(2)}_{k} \nabla d^{(3)}_m, \quad 1 \le k \le N_{\rm d}^{(2)}, 1 \le m \le N_{\rm d}^{(3)} .\]</div>
+<p>The quadratic  POD potential is defined as a linear combination of the
+original and new global descriptors as follows</p>
+<div class="math notranslate nohighlight">
+\[E^{(2*3)} = \sum_{k=1}^{N_{\rm 2d}^{(2*3)}} \sum_{m=1}^{N_{\rm 3d}^{(2*3)}} c^{(2*3)}_{km} d^{(2*3)}_{km} .\]</div>
+<p>It thus follows that</p>
+<div class="math notranslate nohighlight">
+\[E^{(2*3)} = 0.5 \sum_{k=1}^{N_{\rm 2d}^{(2*3)}} \left( \sum_{m=1}^{N_{\rm 3d}^{(2*3)}} c^{(2*3)}_{km} d_m^{(3)} \right) d_k^{(2)} + 0.5 \sum_{m=1}^{N_{\rm 3d}^{(2*3)}} \left( \sum_{k=1}^{N_{\rm 2d}^{(2*3)}} c^{(2*3)}_{km} d_k^{(2)} \right) d_m^{(3)}  ,\]</div>
+<p>which is simplified to</p>
+<div class="math notranslate nohighlight">
+\[E^{(2*3)} =  0.5 \sum_{k=1}^{N_{\rm 2d}^{(2*3)}} b_k^{(2)} d_k^{(2)} +  0.5 \sum_{m=1}^{N_{\rm 3d}^{(2*3)}}   b_m^{(3)} d_m^{(3)}\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}b_k^{(2)} &amp; = \sum_{m=1}^{N_{\rm 3d}^{(2*3)}} c^{(2*3)}_{km} d_m^{(3)}, \quad k = 1,\ldots, N_{\rm 2d}^{(2*3)}, \\
+b_m^{(3)} &amp; = \sum_{k=1}^{N_{\rm 2d}^{(2*3)}} c^{(2*3)}_{km} d_k^{(2)}, \quad m = 1,\ldots, N_{\rm 3d}^{(2*3)} .\end{split}\]</div>
+<p>The quadratic POD potential results in the following atomic forces</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol F^{(2*3)} = - \sum_{k=1}^{N_{\rm 2d}^{(2*3)}} \sum_{m=1}^{N_{\rm 3d}^{(2*3)}} c^{(2*3)}_{km}  \nabla d^{(2*3)}_{km} .\]</div>
+<p>It can be shown that</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol F^{(2*3)} = - \sum_{k=1}^{N_{\rm 2d}^{(2*3)}}   b^{(2)}_k \nabla d_k^{(2)} - \sum_{m=1}^{N_{\rm 3d}^{(2*3)}}  b^{(3)}_m  \nabla d_m^{(3)} .\]</div>
+<p>The calculation of the atomic forces for the quadratic POD  potential
+only requires the extra calculation of <span class="math notranslate nohighlight">\(b_k^{(2)}\)</span> and <span class="math notranslate nohighlight">\(b_m^{(3)}\)</span> which can be negligible.
+As a result, the quadratic  POD potential does not increase the computational complexity.</p>
+</section>
+<section id="training">
+<h2>Training<a class="headerlink" href="#training" title="Permalink to this heading"></a></h2>
+<p>POD potentials are trained using the least-squares regression against
+density functional theory (DFT) data.  Let <span class="math notranslate nohighlight">\(J\)</span> be the number of
+training configurations, with <span class="math notranslate nohighlight">\(N_j\)</span> being the number of atoms in
+the j-th configuration. Let <span class="math notranslate nohighlight">\(\{E^{\star}_j\}_{j=1}^{J}\)</span> and
+<span class="math notranslate nohighlight">\(\{\boldsymbol F^{\star}_j\}_{j=1}^{J}\)</span> be the DFT energies and
+forces for <span class="math notranslate nohighlight">\(J\)</span> configurations. Next, we calculate the global
+descriptors and their derivatives for all training configurations. Let
+<span class="math notranslate nohighlight">\(d_{jm}, 1 \le m \le M\)</span>, be the global descriptors associated with
+the j-th configuration, where <span class="math notranslate nohighlight">\(M\)</span> is the number of global
+descriptors. We then form a matrix <span class="math notranslate nohighlight">\(\boldsymbol A \in
+\mathbb{R}^{J \times M}\)</span> with entries <span class="math notranslate nohighlight">\(A_{jm} = d_{jm}/ N_j\)</span> for
+<span class="math notranslate nohighlight">\(j=1,\ldots,J\)</span> and <span class="math notranslate nohighlight">\(m=1,\ldots,M\)</span>.  Moreover, we form a
+matrix <span class="math notranslate nohighlight">\(\boldsymbol B \in \mathbb{R}^{\mathcal{N} \times M}\)</span> by
+stacking the derivatives of the global descriptors for all training
+configurations from top to bottom, where <span class="math notranslate nohighlight">\(\mathcal{N} =
+3\sum_{j=1}^{J} N_j\)</span>.</p>
+<p>The coefficient vector <span class="math notranslate nohighlight">\(\boldsymbol c\)</span> of the POD potential is
+found by solving the following least-squares problem</p>
+<div class="math notranslate nohighlight">
+\[{\min}_{\boldsymbol c \in \mathbb{R}^{M}} \ w_E \|\boldsymbol A(\boldsymbol \eta) \boldsymbol c - \bar{\boldsymbol E}^{\star} \|^2 + w_F \|\boldsymbol B(\boldsymbol \eta) \boldsymbol c + \boldsymbol F^{\star} \|^2 + w_R \|\boldsymbol c \|^2,\]</div>
+<p>where <span class="math notranslate nohighlight">\(w_E\)</span> and <span class="math notranslate nohighlight">\(w_F\)</span> are weights for the energy
+(<em>fitting_weight_energy</em>) and force (<em>fitting_weight_force</em>),
+respectively; and <span class="math notranslate nohighlight">\(w_R\)</span> is the regularization parameter (<em>fitting_regularization_parameter</em>).  Here <span class="math notranslate nohighlight">\(\bar{\boldsymbol E}^{\star} \in
+\mathbb{R}^{J}\)</span> is a vector of with entries <span class="math notranslate nohighlight">\(\bar{E}^{\star}_j =
+E^{\star}_j/N_j\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol F^{\star}\)</span> is a vector of
+<span class="math notranslate nohighlight">\(\mathcal{N}\)</span> entries obtained by stacking <span class="math notranslate nohighlight">\(\{\boldsymbol
+F^{\star}_j\}_{j=1}^{J}\)</span> from top to bottom.</p>
+<p>The training procedure is the same for both the linear and quadratic POD
+potentials.  However, since the quadratic POD potential has a
+significantly larger number of the global descriptors, it is more
+expensive to train the linear POD potential. This is because the
+training of the quadratic POD potential still requires us to calculate
+and store the quadratic global descriptors and their
+gradient. Furthermore, the quadratic POD potential may require more
+training data in order to prevent over-fitting. In order to reduce the
+computational cost of fitting the quadratic POD potential and avoid
+over-fitting, we can use subsets of two-body and three-body PODs for
+constructing the new descriptors.</p>
+</section>
+<section id="restrictions">
+<h2>Restrictions<a class="headerlink" href="#restrictions" title="Permalink to this heading"></a></h2>
+<p>This command is part of the ML-POD package.  It is only enabled if
+LAMMPS was built with that package. See the <a class="reference internal" href="Build_package.html"><span class="doc">Build package</span></a> page for more info.</p>
+</section>
+<section id="related-commands">
+<h2>Related commands<a class="headerlink" href="#related-commands" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="pair_pod.html"><span class="doc">pair_style pod</span></a></p>
+</section>
+<section id="default">
+<h2>Default<a class="headerlink" href="#default" title="Permalink to this heading"></a></h2>
+<p>The keyword defaults are also given in the description of the input files.</p>
+<hr class="docutils" />
+<p id="grepl20072"><strong>(Grepl)</strong> Grepl, Maday, Nguyen, and Patera, ESAIM: Mathematical Modelling and Numerical Analysis 41(3), 575-605, (2007).</p>
+<p id="nguyen20222"><strong>(Nguyen)</strong> Nguyen and Rohskopf, arXiv preprint arXiv:2209.02362 (2022).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fix_modify.html" class="btn btn-neutral float-left" title="fix_modify command" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="group.html" class="btn btn-neutral float-right" title="group command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2003-2024 Sandia Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>

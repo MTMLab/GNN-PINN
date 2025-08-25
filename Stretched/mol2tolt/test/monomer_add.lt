@@ -1,0 +1,22 @@
+write_once("In Settings") {
+    improper_coeff @improper:c-ca-ca-ca cvff 0.3667 -1 2
+    improper_coeff @improper:ca-h4-ca-nb cvff 0.3667 -1 2
+    improper_coeff @improper:ca-n-c-o cvff 0.3667 -1 2
+    improper_coeff @improper:c-ca-n-hn cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-n cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-ha cvff 0.3667 -1 2
+}
+write_once("Data Bonds By Type") {
+}
+write_once("Data Angles By Type") {
+}
+write_once("Data Dihedrals By Type") {
+}
+write_once("Data Impropers By Type") {
+    @improper:c-ca-ca-ca @atom:ca @atom:ca @atom:c @atom:ca
+    @improper:ca-h4-ca-nb @atom:ca @atom:h4 @atom:ca @atom:nb
+    @improper:ca-n-c-o @atom:c @atom:n @atom:ca @atom:o
+    @improper:c-ca-n-hn @atom:n @atom:ca @atom:c @atom:hn
+    @improper:ca-ca-ca-n @atom:ca @atom:ca @atom:ca @atom:n
+    @improper:ca-ca-ca-ha @atom:ca @atom:ca @atom:ca @atom:ha
+}

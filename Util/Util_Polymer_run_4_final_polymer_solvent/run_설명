@@ -1,0 +1,76 @@
+#!/bin/bash
+mkdir lammps/solvent
+cp back/* lammps/solvent
+source ~/.bashrc
+source activate
+source activate AmberTools21
+# polymer
+cp structures/polymer.smi test.smi
+obabel -ismi test.smi -omol2 --gen3d --partialcharge eem -O monomer_com1.mol2
+antechamber -i monomer_com1.mol2 -fi mol2 -fo mol2 -o monomer_com2.mol2 -pf y -at gaff
+/home/hyeonsuk/Aramid/openbabel_test/Util_monomer_modify_4_polymer_end_H/exe
+cp monomer_reorder2.mol2 mol2tolt/test/monomer.mol2
+cp polymer_new.lt moltemplates/polymer.lt
+cp system_new.lt moltemplates/system.lt
+cd mol2tolt/
+./run.sh
+cp test/monomer.lt ../moltemplates/monomer_add.lt
+cd ..
+cd moltemplates
+/home/hyeonsuk/moltemplate-master/moltemplate/scripts/moltemplate.sh system.lt
+cp system.data ../lammps/solvent/system.data
+cd ..
+
+#ratio calculation
+cd moltemplates
+cp system.data ../ratio_calcualtion/polymer/system.data
+cd ../ratio_calcualtion/polymer
+/usr/bin/lmp_stable -in run_polymer_mass.npt2
+python polymer_mass.py 
+cp extracted_mass.txt ../extracted_mass.txt
+cd ../..
+
+cp solvent/solvent.smi solvent.smi
+obabel -ismi solvent.smi -omol2 --gen3d --partialcharge eem -O solvent_com1.mol2
+antechamber -i solvent_com1.mol2 -fi mol2 -fo mol2 -o solvent_com2.mol2 -pf y -at gaff
+cp solvent_com2.mol2 mol2tolt_solvent/test/solvent.mol2
+cd mol2tolt_solvent/
+./run.sh
+cp test/solvent.lt ../moltemplates_solvent_single/solvent.lt
+cd ..
+
+cd moltemplates_solvent_single
+/home/hyeonsuk/moltemplate-master/moltemplate/scripts/moltemplate.sh system.lt
+cp system.data ../ratio_calcualtion/solvent/system.data
+cd ../ratio_calcualtion/solvent
+/usr/bin/lmp_stable -in run_solvent_mass.npt2
+python solvent_mass.py
+cp extracted_solvent_mass.txt ../extracted_solvent_mass.txt
+cd ..
+
+python number_solvnet.py
+python factoring.py
+python solvent_lt.py
+cp system_solvent.lt ../system_solvent.lt
+cd ..
+
+
+# solvnet
+#cp solvent/solvent.smi solvent.smi
+#obabel -ismi solvent.smi -omol2 --gen3d --partialcharge eem -O solvent_com1.mol2
+#antechamber -i solvent_com1.mol2 -fi mol2 -fo mol2 -o solvent_com2.mol2 -pf y -at gaff
+#cp solvent_com2.mol2 mol2tolt_solvent/test/solvent.mol2
+cp system_solvent.lt moltemplates_solvent/system.lt
+cd mol2tolt_solvent/
+./run.sh
+cp test/solvent.lt ../moltemplates_solvent/solvent.lt
+cd ..
+cd moltemplates_solvent
+/home/hyeonsuk/moltemplate-master/moltemplate/scripts/moltemplate.sh system.lt
+cp system.data ../lammps/solvent/system_solvent.data
+cd ..
+cd lammps/solvent
+python ../../group_polymer.py
+python ../../group_solvent.py
+/usr/bin/lmp_stable -in run_iso.in.npt2_wo_strain
+/home/hyeonsuk/Aramid/openbabel_test/Util_Polymer_Output2/exe

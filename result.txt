@@ -1,0 +1,6 @@
+O=C(O)c1cncc(C(=O)O)c1 CC binary 2 0 2 -0.134392 -0.001406
+O=C(O)c1cncc(C(=O)O)c1 CCC ternary 2 1 2 -0.122317 -0.002103
+O=C(O)c1cncc(C(=O)O)c1 C binary 1 0 1 -0.115261 -0.000043
+O=C(O)c1cncc(C(=O)O)c1 CCC binary 2 0 2 -0.132477 -1000.000000
+O=C(O)c1cncc(C(=O)O)c1 CC     binary 3 0 4 -0.134392 -0.001406
+O=C(O)c1cncc(C(=O)O)c1 CCN1CCCC1=O binary 5 0 5 -0.133430 -0.013587

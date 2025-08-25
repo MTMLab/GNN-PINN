@@ -1,0 +1,143 @@
+#include "nr.h"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+using namespace std;
+
+int main() {
+
+        std::sprintf;
+	        std::ofstream outfile;
+        char command0[100]; 
+  char command1[100]; 
+  char command2[100]; 
+  char command3[100]; 
+  char command4[100]; 
+  char command5[100]; 
+        string data0;
+        string data1;
+	string string1, string2;
+        DP N_node, rr;
+    //    int system;
+   //     int m,mm,mmm,mmm,mmmm;
+   
+    // Empty vector holding all names from file
+         vector<string> names;
+         
+    //         // Read names from file LineUp.txt
+                 ifstream in("name.txt");
+                     if(!in.is_open())
+                             cout << "Unable to open file\n";
+    
+    //                             // this is wrong, by the way: while(in.good()){
+                                     string word;
+                                        while(getline(in, word))
+                                                     names.push_back(word);
+    //
+                                                         sort(names.begin(), names.end());
+    //
+    //                                                         // Loop to print names
+
+
+                                                       
+    
+
+
+      ofstream outputFile5("TDA_initial", ios::out);
+  if (!outputFile5) {
+    cerr << "Spec could not be opened" << endl;
+    exit(1);
+  }
+
+  sprintf (command0, "rm Spec.dat"); 
+   int systemRet0 =  system(command0);
+
+
+  sprintf (command0, "rm List.dat");
+   int systemRet30 =  system(command0);
+
+    outfile.open("List.dat", std::ios_base::app);
+
+  for ( size_t i = 0; i < names.size(); i++ ) {
+
+
+  sprintf (command1, "cp %s.cssr data0.cssr", names[i].c_str());
+   int systemRet1 =  system(command1);
+
+      sprintf (command1, "/home/yongjin/Research/Util/zeo++-0.2.2/network -ha -vol 1.5 1.5 50000 %s.cssr", "data0");
+   int systemRet5 =  system(command1);
+
+  N_node = 0;
+
+  ifstream inputFile21("data0.vol",ios::in);
+  if (!inputFile21) {
+    cerr << "inputFile31 could not be opened" << endl;
+  //  exit(1);
+  }
+   inputFile21 >> string1 >> string1 >> string1 >> rr >> string1 >> rr >> string1 >> N_node;
+
+   if ( N_node != 0 ) {
+    outfile << names[i].c_str() << endl;   
+   }
+
+      sprintf (command2, "rm data0.vol");
+ int systemRet2222 =  system(command2);
+
+  }
+
+
+
+  for (size_t i = 0; i < names.size(); i++) {
+    
+    // data0 = names[i];
+
+  
+  sprintf (command1, "cp %s.cssr data0.cssr", names[i].c_str());
+   int systemRet1 =  system(command1);
+
+  sprintf (command1, "/home/yongjin/Research/Util/zeo++-0.2.2/network -ha -res %s.cssr", "data0");
+   int systemRet5 =  system(command1);
+
+    sprintf (command1, "mv data0.res data0.txt");
+   int systemRet11 =  system(command1);
+      
+ sprintf (command1, "/home/yongjin/Research/Util/zeo++-0.2.2/network -ha -sa 1.5 1.5 2000 %s.cssr", "data0");
+   int systemRet15 =  system(command1);
+
+    sprintf (command1, "mv data0.sa data1.txt");
+   int systemRet22 =  system(command1);
+
+ sprintf (command1, "/home/yongjin/Research/Util/zeo++-0.2.2/network -ha -vol 1.5 1.5 50000 %s.cssr", "data0");
+   int systemRet25 =  system(command1);
+ 
+    sprintf (command1, "mv data0.vol data2.txt");
+   int systemRet12 =  system(command1);
+
+sprintf (command4, "/home/yongjin/Research/Util/Util_write_zeo_output/exe" );
+int systemRet4 =  system(command4);
+
+      sprintf (command2, "rm data0.txt");
+ int systemRet22222 =  system(command2);
+
+        sprintf (command2, "rm data1.txt");
+ int systemRet22223 =  system(command2);
+
+      sprintf (command2, "rm data2.txt");
+ int systemRet22224 =  system(command2);
+
+
+  }
+
+ 
+
+  return 0;
+
+
+                                                         
+}
+                                       

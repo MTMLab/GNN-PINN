@@ -1,0 +1,46 @@
+import "monomer_add.lt"    # <-- define the "SPCE" molecule
+import "PPTA.lt"
+
+aramid inherits GAFF {
+
+  # Create a 3-dimensional array of 8 water molecules
+
+  create_var {$mol}
+
+  monomers[0] = new PPTA
+  monomers[1] = new cation.move(11,0,0)
+   monomers[2] = new PPTA.move(26,0,0)
+   monomers[3] = new cation.move(37,0,0)
+      monomers[4] = new PPTA.move(52,0,0)
+   monomers[5] = new cation.move(63,0,0)
+      monomers[6] = new PPTA.move(78,0,0)
+   monomers[7] = new cation.move(89,0,0)
+      monomers[8] = new PPTA.move(104,0,0)
+   monomers[9] = new cation.move(115,0,0)
+      monomers[10] = new PPTA.move(130,0,0)
+   monomers[11] = new cation.move(141,0,0)
+      monomers[12] = new PPTA.move(156,0,0)
+   monomers[13] = new cation.move(167,0,0)
+         monomers[14] = new PPTA.move(182,0,0)
+    monomers[15] = new cation.move(193,0,0)
+
+  write('Data Bond List') {
+    $bond:b1  $atom:monomers[0]/atom2 $atom:monomers[1]/atom1
+    $bond:b2  $atom:monomers[1]/atom2 $atom:monomers[2]/atom1
+    $bond:b3  $atom:monomers[2]/atom2 $atom:monomers[3]/atom1
+    $bond:b4  $atom:monomers[3]/atom2 $atom:monomers[4]/atom1
+    $bond:b5  $atom:monomers[4]/atom2 $atom:monomers[5]/atom1
+    $bond:b6  $atom:monomers[5]/atom2 $atom:monomers[6]/atom1
+    $bond:b7  $atom:monomers[6]/atom2 $atom:monomers[7]/atom1
+    $bond:b8  $atom:monomers[7]/atom2 $atom:monomers[8]/atom1
+    $bond:b9  $atom:monomers[8]/atom2  $atom:monomers[9]/atom1
+    $bond:b10  $atom:monomers[9]/atom2 $atom:monomers[10]/atom1
+    $bond:b11  $atom:monomers[10]/atom2 $atom:monomers[11]/atom1
+    $bond:b12  $atom:monomers[11]/atom2 $atom:monomers[12]/atom1
+    $bond:b13  $atom:monomers[12]/atom2 $atom:monomers[13]/atom1
+    $bond:b14  $atom:monomers[13]/atom2 $atom:monomers[14]/atom1
+    $bond:b15  $atom:monomers[14]/atom2 $atom:monomers[15]/atom1
+    $bond:b16  $atom:monomers[15]/atom2 $atom:monomers[0]/atom1
+  
+  }
+}

@@ -1,0 +1,372 @@
+/************************************************************
+ * Developers: Sangheon Lee and Gyeong S. Hwang
+ *************************************************************/
+
+#include "nr.h"
+#include <iostream>
+#include <cmath>
+using std::cout;
+using std::cin;
+using std::endl;
+using std::ios;
+using std::cerr; 
+#include <fstream>
+using std::ofstream;
+using std::ifstream;
+#include <iomanip>
+using std::setw;
+
+#include <cstdlib>
+#include <ctime>
+#include <string>
+using std::string;
+
+using namespace std;
+
+int numC = 3;
+int numN = 4;
+DP pi = 3.141592654;
+int aC = 0;
+int aSi = 1;
+int aO = 2;
+int aH = 3;
+
+//
+// Global variables.
+//
+int namax; // Maximum number of atoms.
+int nemax = 4; // Maximum number of elements.
+int na; // Number of total atoms in the system.
+int nnmax = 12; // Maximum number of neighbors.
+DP cutoff1 = 3.0;
+int penalty;
+int npmax = 10; 
+
+
+int main()  
+{
+  //  cout << "Enter number of atoms:" << endl; 
+  //  cin >> namax;
+  namax = 20000;
+  na = namax;
+  Mat_IO_INT nn(namax, nnmax);
+  Mat_IO_DP x(namax, numC), r(namax, numN);
+  Vec_IO_INT elem(namax), cnt(namax), idb1(namax), idr1(namax), ide1(namax);
+  Mat_IO_DP len(numC, numC), hlen(numC, numC);
+  Vec_IO_DP v_d_ij(numC);
+  int i, j, k, l, ii, jj, kk, jjj;
+  int idum;
+  int logic1;
+  int charge1;
+  int nE1, nE2;
+  int cnt1;
+  int nCC, nCH;
+  int nangles, nbonds, ndihedrals;
+  DP sum0, sum1, sum2, sum3, sum4, sum5;
+  DP R0, R1, R2, R3, R4, R5;
+  DP n0, n1, n2, n3, n4, n5;
+  DP dx, dy, dz, rij;
+
+  string C("C");
+  string Si("Si");
+  string O("O");
+  string H("H");
+  string string1;
+  string system1;
+
+  elem = -1;
+  
+  // 
+  // Read an initial configuration.
+  //
+  
+  ifstream inputFile3("config.xyz",ios::in);
+  if (!inputFile3) {
+    cerr << "inputFile3 could not be opened" << endl;
+    exit(1);
+  }
+  inputFile3 >> na;
+  inputFile3 >> system1 
+	     >> len[0][0] >> len[0][1] >> len[0][2] 
+	     >> len[1][0] >> len[1][1] >> len[1][2] 
+	     >> len[2][0] >> len[2][1] >> len[2][2]; 
+  for (i = 0; i < numC; i++) 
+    for (j = 0; j < numC; j++) 
+      hlen[i][j] = 0.5*len[i][j];
+
+  nE1 = 0;
+  for (i = 0; i < na; i++) {
+    inputFile3 >> string1 >> x[i][0] >> x[i][1] >> x[i][2];
+    logic1 = string1.compare(C);
+    if (logic1 == 0) {
+      elem[i] = aC; 
+    }
+    else {
+      logic1 = string1.compare(Si);
+      if (logic1 == 0) 
+	elem[i] = aSi;
+      else {
+	logic1 = string1.compare(O); 
+	if (logic1 == 0) 
+	  elem[i] = aO;
+	else {
+	  logic1 = string1.compare(H); 
+	  if (logic1 == 0) 
+	    elem[i] = aH;	  
+	}
+      }
+    }
+  }
+
+  int at_0, at_1, at_2, at_3, at_4, at_5;
+
+  NR::neighbor_list(x, len, hlen, elem, nn); 
+
+  //
+  // Set number of neighbors for each atoms. 
+  // 
+  
+  for (i = 0; i < na; i++) {
+    cnt[i] = 0;
+    for (j = 0; j < nnmax; j++) {
+      if (nn[i][j] != -1) 
+	cnt[i]++;
+    }
+  } 
+
+  //
+  // Bond lengths
+  //
+
+  for (i = 0; i < na; i++) {
+    ii = i;
+    cnt1 = cnt[ii];
+    for (j = 0; j < cnt1; j++) {
+      jj = nn[ii][j];
+      NR::dist_ij(x, len, hlen, ii, jj, rij, v_d_ij);	
+      r[ii][j] = rij;
+      //      cout << rij << endl;
+    }
+  }
+
+  n0 = n1 = n2 = n3 = n4 = n5 = 0; 
+  R0 = R1 = R2 = R3 = R4 = R5 = 0.0;
+  sum0 = sum1 = sum2 = sum3 = sum4 = sum5 = 0.0;
+  for (i = 0; i < na; i++) {
+    ii = i;
+    cnt1 = cnt[ii];
+    for (j = 0; j < cnt1; j++) {
+      jj = nn[ii][j];
+      if ((elem[ii] == aC && elem[jj] == aO)
+	  ||(elem[ii] == aO && elem[jj] == aC)) {
+	sum0 += r[ii][j];
+	n0++;
+      }
+      else if ((elem[ii] == aSi && elem[jj] == aO)
+	       ||(elem[ii] == aO && elem[jj] == aSi)) {
+	sum1 += r[ii][j];
+	n1++;
+      }
+      else if (elem[ii] == aC && elem[jj] == aC) {
+	sum2 += r[ii][j];
+	n2++;
+      }
+      else if (elem[ii] == aSi && elem[jj] == aSi) {
+	sum3 += r[ii][j];
+	n3++;
+      }
+      else if ((elem[ii] == aC && elem[jj] == aH)
+	       ||(elem[ii] == aH && elem[jj] == aC)) {
+	sum4 += r[ii][j];
+	n4++;
+      }
+      else if ((elem[ii] == aSi && elem[jj] == aH)
+	       ||(elem[ii] == aH && elem[jj] == aSi)) {
+	sum5 += r[ii][j];
+	n5++;
+      }
+    }
+  }
+
+  if (n0 != 0) 
+    R0 = sum0/(double(n0));
+  if (n1 != 0) 
+    R1 = sum1/(double(n1));
+  if (n2 != 0) 
+    R2 = sum2/(double(n2));
+  if (n3 != 0) 
+    R3 = sum3/(double(n3));
+  if (n4 != 0) 
+    R4 = sum4/(double(n4));
+  if (n5 != 0) 
+    R5 = sum5/(double(n5));
+
+  //
+  // Identities
+  // 
+  
+  idb1 = 1;
+  idr1 = 1;
+  ide1 = 1;
+
+  ofstream outputFile1("idb1.dat",ios::out);
+  if (!outputFile1) {
+    cerr << "outputFile1 could not be opened" << endl;
+    exit(1);
+  }  
+  ofstream outputFile2("idr1.dat",ios::out);
+  if (!outputFile2) { 
+    cerr << "outputFile2 could not be opened" << endl;
+    exit(1);
+  }
+  ofstream outputFile3("ide1.dat",ios::out);
+  if (!outputFile3) {
+    cerr << "outputFile3 could not be opened" << endl;
+    exit(1);
+  }
+  ofstream outputFile4("BondLength.dat",ios::out);
+  if (!outputFile4) {
+    cerr << "outputFile4 could not be opened" << endl;
+    exit(1);
+  }
+  outputFile4 << setw(10) << "C-O:" << setw(20) << R0 << endl; 
+  outputFile4 << setw(10) << "Si-O:" << setw(20) << R1 << endl;
+  outputFile4 << setw(10) << "C-C:" << setw(20) << R2 << endl;
+  outputFile4 << setw(10) << "Si-Si:" << setw(20) << R3 << endl;
+  outputFile4 << setw(10) << "C-H:" << setw(20) << R4 << endl;
+  outputFile4 << setw(10) << "Si-H:" << setw(20) << R5 << endl;
+
+  for (i = 0; i < na; i++) {
+    outputFile1 << i << setw(10) << idb1[i] << endl;
+    outputFile2 << i << setw(10) << idr1[i] << endl;
+    outputFile3 << i << setw(10) << ide1[i] << endl;
+ }
+
+  ofstream outputFile5("nn.dat",ios::out);
+  if (!outputFile5) {
+    cerr << "outputFile5 could not be opened" << endl;
+    exit(1);
+  }
+  for (i = 0; i < na; i++) {
+    outputFile5 << setw(10) << i;
+    for (j = 0; j < nnmax; j++) {
+      outputFile5 << setw(10) << nn[i][j];
+    }
+    outputFile5 << endl;
+  }
+
+
+// analysis for bond, angle, dihedral
+
+  k = 0;
+  nCC = 0;
+  nCH = 0;
+
+  for ( i = 0; i < na; i++ ) {
+    for ( j = 0; j < cnt[i]; j++ ) {
+
+      if ( i > nn[i][j] ) continue;
+
+
+      else{
+        {
+      if (elem[i] == aC && elem[nn[i][j]] == aC) {
+    //    bond_type[k] = 1;
+        nCC++;
+
+      }
+      else { //if (elem[i] == aSi && elem[nn[i][j]] == aO 
+        //    || elem[i] == aO && elem[nn[i][j]] == aSi) {
+   //     bond_type[k] = 2;
+        nCH++;
+      }
+ //     bond1[k] = i;
+  //    bond2[k] = nn[i][j];
+      k++;
+      }
+      }
+    }
+
+  }
+
+    nbonds = k;
+   // cout << nSiSi << endl;
+   // cout << nSiO << endl;
+
+  k = 0;
+
+  for ( i = 0; i < na; i++ ) {
+    for ( j = 0; j < cnt[i]; j++ ) {
+      for ( jj = j+1; jj < cnt[i]; jj++ ) {
+
+//      if (elem[i] == aC && elem[nn[i][j]] == aC && elem[nn[i][jj]] == aC ) {
+ //       angle_type[k] = 1;
+  //    }
+   //   else if (elem[i] == aC && elem[nn[i][j]] == aC && elem[nn[i][jj]] == aH  ) {
+    //    angle_type[k] = 2;
+     // }
+      //else if (elem[i] == aC && elem[nn[i][j]] == aH && elem[nn[i][jj]] == aC  ) {
+      //  angle_type[k] = 2;
+     // }
+     // else if (elem[i] == aC && elem[nn[i][j]] == aH && elem[nn[i][jj]] == aH ) {
+     //   angle_type[k] = 3;
+    //  }
+     // else {//if (elem[i] == aSi && elem[nn[i][j]] == aO && elem[nn[i][jj]] == aO  ) {
+     //   angle_type[k] = 4;
+    //  }
+ 
+     // angle1[k] = i;
+     // angle2[k] = nn[i][j];
+     // angle3[k] = nn[i][jj];
+      k++;
+    }
+    }
+  }
+
+    nangles = k;
+
+  k = 0;
+
+  for ( i = 0; i < na; i++ ) {
+    for ( j = 0; j < cnt[i]; j++ ) {
+      for ( jj = j+1; jj < cnt[i]; jj++ ) {
+        for ( jjj = 0; jjj < cnt[nn[i][jj]]; jjj++ ) {        
+               if ( nn[nn[i][jj]][jjj] == i ||  nn[nn[i][jj]][jjj] == nn[i][jj] ) continue;
+
+//      if (elem[i] == aC && elem[nn[i][j]] == aC && elem[nn[i][jj]] == aC ) {
+ //       angle_type[k] = 1;
+  //    }
+   //   else if (elem[i] == aC && elem[nn[i][j]] == aC && elem[nn[i][jj]] == aH  ) {
+    //    angle_type[k] = 2;
+     // }
+     // else if (elem[i] == aC && elem[nn[i][j]] == aH && elem[nn[i][jj]] == aC  ) {
+     //   angle_type[k] = 2;
+     // }
+     // else if (elem[i] == aC && elem[nn[i][j]] == aH && elem[nn[i][jj]] == aH ) {
+      //  angle_type[k] = 3;
+     // }
+    //  else {//if (elem[i] == aSi && elem[nn[i][j]] == aO && elem[nn[i][jj]] == aO  ) {
+     //   angle_type[k] = 4;
+    //  }
+ 
+    //  angle1[k] = i;
+    //  angle2[k] = nn[i][j];
+    //  angle3[k] = nn[i][jj];
+      k++;
+    }
+    }
+  }
+}
+    ndihedrals = k;
+
+   cout << "nbond = " << nbonds << endl;
+   cout << "nangle = " << nangles << endl;
+   cout << "ndihedral = " << ndihedrals << endl; 
+
+
+
+
+  return 0;
+}
+
+

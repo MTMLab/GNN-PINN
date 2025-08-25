@@ -1,0 +1,12 @@
+import "polymer.lt"
+
+ polymers = new aramid
+                               
+
+# Periodic boundary conditions:
+write_once("Data Boundary") {
+   0.0   210  xlo xhi
+   0.0   40  ylo yhi
+   0.0   40   zlo zhi
+}
+

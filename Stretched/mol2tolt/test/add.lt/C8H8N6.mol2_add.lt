@@ -1,0 +1,42 @@
+write_once("In Settings") {
+    angle_coeff @angle:n-ca-nb harmonic 73.20 116.95   # SOURCE4 765 0.8040
+    dihedral_coeff @dihedral:ca-ca-cd-nc fourier 1 0.7 2 180.0    # optimized by Junmei Wang, March 2013
+    dihedral_coeff @dihedral:ca-ca-cd-nh fourier 1 0.7 2 180.0    # optimized by Junmei Wang, March 2013
+    dihedral_coeff @dihedral:ca-ca-cg-n1 fourier 1 0.0 2 180.0    # 
+    improper_coeff @improper:c3-ca-na-nc cvff 0.3667 -1 2
+    improper_coeff @improper:ca-nc-cd-nh cvff 0.3667 -1 2
+    improper_coeff @improper:cd-hn-nh-hn cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-cd cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-ha cvff 0.3667 -1 2
+    improper_coeff @improper:ca-ca-ca-cg cvff 0.3667 -1 2
+    improper_coeff @improper:ca-n-ca-nb cvff 0.3667 -1 2
+    improper_coeff @improper:c-ca-n-hn cvff 0.3667 -1 2
+    improper_coeff @improper:ca-na-ca-nb cvff 0.3667 -1 2
+    improper_coeff @improper:ca-n-c-o cvff 0.3667 -1 2
+    improper_coeff @improper:c-ca-ca-ca cvff 0.3667 -1 2
+    improper_coeff @improper:ca-h4-c-o cvff 0.3667 -1 2
+}
+write_once("Data Bonds By Type") {
+}
+write_once("Data Angles By Type") {
+    @angle:n-ca-nb @atom:n @atom:ca @atom:nb
+}
+write_once("Data Dihedrals By Type") {
+    @dihedral:ca-ca-cd-nc @atom:ca @atom:ca @atom:cd @atom:nc
+    @dihedral:ca-ca-cd-nh @atom:ca @atom:ca @atom:cd @atom:nh
+    @dihedral:ca-ca-cg-n1 @atom:ca @atom:ca @atom:cg @atom:n1
+}
+write_once("Data Impropers By Type") {
+    @improper:c3-ca-na-nc @atom:na @atom:ca @atom:c3 @atom:nc
+    @improper:ca-nc-cd-nh @atom:cd @atom:nc @atom:ca @atom:nh
+    @improper:cd-hn-nh-hn @atom:nh @atom:hn @atom:cd @atom:hn
+    @improper:ca-ca-ca-cd @atom:ca @atom:ca @atom:ca @atom:cd
+    @improper:ca-ca-ca-ha @atom:ca @atom:ca @atom:ca @atom:ha
+    @improper:ca-ca-ca-cg @atom:ca @atom:ca @atom:ca @atom:cg
+    @improper:ca-n-ca-nb @atom:ca @atom:n @atom:ca @atom:nb
+    @improper:c-ca-n-hn @atom:n @atom:ca @atom:c @atom:hn
+    @improper:ca-na-ca-nb @atom:ca @atom:na @atom:ca @atom:nb
+    @improper:ca-n-c-o @atom:c @atom:n @atom:ca @atom:o
+    @improper:c-ca-ca-ca @atom:ca @atom:ca @atom:c @atom:ca
+    @improper:ca-h4-c-o @atom:c @atom:h4 @atom:ca @atom:o
+}
