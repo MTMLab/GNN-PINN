@@ -4,6 +4,13 @@
 
 This repository implements a multi-stage training pipeline to predict thermodynamic properties using graph neural networks (GNNs) combined with physics-informed neural networks (PINNs). The model leverages both non-equilibrium and equilibrium datasets through a three-stage process, enabling robust prediction performance with custom loss functions that enforce physical consistency.
 
+## Citation
+
+If you use this code, please cite the following paper:
+
+[A Multi-Stage Graph Neural Network–Physics-Informed Neural Network (GNN–PINN) Framework for Thermodynamic Property Prediction](https://doi.org/10.1021/acs.iecr.5c02302)  
+*Industrial & Engineering Chemistry Research, 2025*
+
 ## Overview
 
 The training pipeline consists of three distinct stages:
